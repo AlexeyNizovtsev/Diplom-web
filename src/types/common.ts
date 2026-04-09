@@ -3,6 +3,7 @@ import type {
   MethodologyPreviewContent,
   MethodologySectionId
 } from "@/types/methodology";
+import type { AssessmentBlockId } from "@/types/questionnaire";
 
 export type Locale = "en" | "ru";
 
@@ -116,6 +117,8 @@ export interface AssessmentDictionary {
     beforeYouStartTitle: string;
     beforeYouStartItems: string[];
     primaryCta: string;
+    resumeCta: string;
+    resumeHint: string;
   };
   blockPlaceholder: {
     eyebrow: string;
@@ -125,6 +128,23 @@ export interface AssessmentDictionary {
     nextStepTitle: string;
     nextStepItems: string[];
     returnToIntro: string;
+  };
+  questionnaire: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    progressLabel: string;
+    questionLabel: string;
+    selectionLabel: string;
+    autosaveNote: string;
+    validationMessage: string;
+    actions: {
+      back: string;
+      nextBlock: string;
+      finishAssessment: string;
+      returnToIntro: string;
+    };
+    blockOrderLabels: Record<AssessmentBlockId, string>;
   };
 }
 

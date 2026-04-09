@@ -1,7 +1,8 @@
 import { HomeBackground } from "@/components/backgrounds/HomeBackground";
-import { AssessmentIntroCard } from "@/components/assessment/AssessmentIntroCard";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/sections/SectionHeading";
+import { questionnaireConfig } from "@/config/questionnaire";
+import { AssessmentIntroEntryPoint } from "@/features/assessment/AssessmentIntroEntryPoint";
 import type { AssessmentDictionary } from "@/types/common";
 
 interface AssessmentIntroPageViewProps {
@@ -28,9 +29,10 @@ export function AssessmentIntroPageView({
             title={content.pageTitle}
             titleClassName="text-[2rem] leading-[1] tracking-[-0.05em] lg:text-[2.55rem]"
           />
-          <AssessmentIntroCard
+          <AssessmentIntroEntryPoint
             content={content}
-            startHref={startHref}
+            defaultStartHref={startHref}
+            questionnaireVersion={questionnaireConfig.version}
           />
         </div>
       </PageContainer>

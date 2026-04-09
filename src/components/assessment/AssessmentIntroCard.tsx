@@ -10,9 +10,16 @@ import type { AssessmentDictionary } from "@/types/common";
 interface AssessmentIntroCardProps {
   content: AssessmentDictionary;
   startHref: string;
+  primaryCtaLabel?: string;
+  helperNote?: string;
 }
 
-export function AssessmentIntroCard({ content, startHref }: AssessmentIntroCardProps) {
+export function AssessmentIntroCard({
+  content,
+  startHref,
+  primaryCtaLabel,
+  helperNote
+}: AssessmentIntroCardProps) {
   return (
     <InfoCard className="rounded-[40px] border-white/30 bg-card/54 px-6 py-7 shadow-[0_18px_48px_rgba(17,19,24,0.08)] lg:min-h-[36rem] lg:px-12 lg:py-9">
       <div className="flex h-full flex-col gap-7 lg:gap-8">
@@ -57,13 +64,20 @@ export function AssessmentIntroCard({ content, startHref }: AssessmentIntroCardP
             iconOnly
             className="shrink-0 self-end"
           />
-          <PrimaryButton
-            href={startHref}
-            className="w-full justify-between px-6 py-4 text-base lg:w-[18rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
-            trailingIcon={<ArrowRightIcon className="h-5 w-5" />}
-          >
-            {content.introCard.primaryCta}
-          </PrimaryButton>
+          <div className="w-full space-y-2 lg:w-auto">
+            {helperNote ? (
+              <p className="text-right text-sm font-semibold text-[#6a6e75] lg:text-[0.98rem]">
+                {helperNote}
+              </p>
+            ) : null}
+            <PrimaryButton
+              href={startHref}
+              className="w-full justify-between px-6 py-4 text-base lg:w-[18rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
+              trailingIcon={<ArrowRightIcon className="h-5 w-5" />}
+            >
+              {primaryCtaLabel ?? content.introCard.primaryCta}
+            </PrimaryButton>
+          </div>
         </div>
       </div>
     </InfoCard>

@@ -25,7 +25,9 @@ export const assessment: AssessmentDictionary = {
       "Responses are saved automatically while you move through the blocks",
       "You can revisit the result later using a saved result code"
     ],
-    primaryCta: "Start assessment"
+    primaryCta: "Start assessment",
+    resumeCta: "Resume assessment",
+    resumeHint: "Continue from {blockLabel}"
   },
   blockPlaceholder: {
     eyebrow: "Assessment block",
@@ -40,5 +42,30 @@ export const assessment: AssessmentDictionary = {
       "Persist answers locally and restore the latest block on reopen"
     ],
     returnToIntro: "Back to assessment intro"
+  },
+  questionnaire: {
+    eyebrow: "Assessment flow",
+    title: "Assessment",
+    description:
+      "Answer one block at a time. Each block captures a different project signal that will later shape the recommendation.",
+    progressLabel: "Block {current} of {total}",
+    questionLabel: "Question",
+    selectionLabel: "Selected",
+    autosaveNote: "Responses are saved automatically",
+    validationMessage: "Complete every question in this block before moving on.",
+    actions: {
+      back: "Back",
+      nextBlock: "Next block",
+      finishAssessment: "Finish assessment",
+      returnToIntro: "Return to intro"
+    },
+    blockOrderLabels: {
+      governance: "Block 1 of 6",
+      requirements: "Block 2 of 6",
+      risk: "Block 3 of 6",
+      iteration: "Block 4 of 6",
+      discipline: "Block 5 of 6",
+      complexity: "Block 6 of 6"
+    }
   }
 };
