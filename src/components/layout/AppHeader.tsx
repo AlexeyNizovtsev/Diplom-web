@@ -10,10 +10,10 @@ interface AppHeaderProps {
 
 export function AppHeader({ nav }: AppHeaderProps) {
   return (
-    <header className="sticky top-0 z-20 pt-5">
+    <header className="sticky top-0 z-20 pt-[var(--app-header-top-gap)]">
       <PageContainer>
         <div
-          className={`flex items-center gap-4 rounded-[32px] px-5 py-4 lg:gap-6 ${glassHeaderSurfaceClasses}`}
+          className={`flex min-h-[var(--app-header-surface-height)] items-center gap-4 rounded-[32px] px-5 py-4 lg:gap-6 ${glassHeaderSurfaceClasses}`}
         >
           <div className="min-w-0 flex-1">
             <NavLinks nav={nav} />

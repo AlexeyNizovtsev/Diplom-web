@@ -1,5 +1,4 @@
 import type {
-  MethodologyContentMap,
   MethodologyId,
   MethodologyPreviewContent,
   MethodologySectionId
@@ -173,8 +172,11 @@ export interface MethodologiesDictionary {
   sidebarLabel: string;
   coreElementsLabel: string;
   firstStepLabelPrefix: string;
+  applicabilityLabels: {
+    goodFit: string;
+    weakerFit: string;
+  };
   sections: Record<MethodologySectionId, string>;
-  content: MethodologyContentMap;
 }
 
 export interface PlaceholdersDictionary {

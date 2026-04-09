@@ -66,17 +66,17 @@ export function SidebarNav({ items, ariaLabel }: SidebarNavProps) {
   }, [items]);
 
   return (
-    <nav aria-label={ariaLabel} className="space-y-2">
+    <nav aria-label={ariaLabel} className="space-y-1.5">
       {items.map((item) => (
         <a
           key={item.id}
           href={`#${item.id}`}
           onClick={() => setActiveId(item.id)}
           className={cn(
-            "block rounded-[24px] border px-4 py-3 text-sm font-semibold transition",
+            "block rounded-[1rem] px-3 py-2 text-sm font-semibold transition lg:px-3.5 lg:text-[0.98rem]",
             activeId === item.id
-              ? "border-dark bg-dark text-text-on-dark"
-              : "border-border bg-card text-text-primary hover:border-[#b59e8b] hover:bg-card-secondary"
+              ? "border-l-2 border-accent bg-transparent text-text-primary"
+              : "border-l-2 border-transparent bg-transparent text-text-secondary hover:border-[#c58b3a] hover:text-text-primary"
           )}
         >
           {item.label}

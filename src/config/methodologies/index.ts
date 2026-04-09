@@ -11,8 +11,8 @@ export const supportedMethodologyOrder: MethodologyId[] = [
 
 export const methodologySectionOrder: MethodologySectionId[] = [
   "overview",
-  "firstSteps",
   "coreElements",
+  "firstSteps",
   "teamNeeds",
   "commonMistakes",
   "applicability",

@@ -30,9 +30,22 @@ export interface MethodologyTag {
   label: string;
 }
 
-export interface MethodologyOverview {
+export interface MethodologyCallout {
+  id: string;
+  label: string;
   title?: string;
   description: string;
+}
+
+export interface MethodologyOverviewEntry {
+  id: string;
+  title: string;
+  description: string;
+}
+
+export interface MethodologyOverview {
+  summary: string;
+  entries: MethodologyOverviewEntry[];
   signalTags: MethodologyTag[];
   fitBadge?: string;
 }
@@ -49,6 +62,7 @@ export interface MethodologyFirstSteps {
   intro?: string;
   mode: "sequence" | "list";
   steps: MethodologyStep[];
+  callout?: MethodologyCallout;
 }
 
 export interface CoreElementItem {
@@ -79,14 +93,14 @@ export interface MethodologyListSection {
   title?: string;
   intro?: string;
   items: MethodologyListItem[];
+  callout?: MethodologyCallout;
 }
 
 export interface MethodologyApplicability {
   title?: string;
-  goodFitTitle: string;
-  weakerFitTitle: string;
   goodFit: MethodologyListItem[];
   weakerFit: MethodologyListItem[];
+  callout?: MethodologyCallout;
 }
 
 export interface MethodologyQuickFit {
@@ -98,6 +112,7 @@ export interface MethodologyContent {
   id: MethodologyId;
   title: string;
   shortLabel?: string;
+  typeLabel: string;
   overview: MethodologyOverview;
   firstSteps: MethodologyFirstSteps;
   coreElements: MethodologyCoreElements;

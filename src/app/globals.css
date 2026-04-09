@@ -12,6 +12,10 @@
   --text-on-dark: 36 47% 94%;
   --border-subtle: 33 25% 80%;
   --accent-primary: 25 52% 52%;
+  --app-header-top-gap: 1.25rem;
+  --app-header-surface-height: 5.5rem;
+  --methodologies-sticky-top: calc(var(--app-header-top-gap) + var(--app-header-surface-height) + 0.75rem);
+  --methodology-scroll-offset: calc(var(--methodologies-sticky-top) + 4.25rem);
 }
 
 * {
