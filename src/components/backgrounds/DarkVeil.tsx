@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Mesh, Program, Renderer, Triangle, Vec2, Vec3 } from "ogl";
-
-import { cn } from "@/lib/utils";
+import { Renderer, Program, Mesh, Triangle, Vec2 } from "ogl";
 
 const vertex = `
 attribute vec2 position;
@@ -14,6 +12,7 @@ const fragment = `
 #ifdef GL_ES
 precision lowp float;
 #endif
+
 uniform vec2 uResolution;
 uniform float uTime;
 uniform float uHueShift;
@@ -21,17 +20,25 @@ uniform float uNoise;
 uniform float uScan;
 uniform float uScanFreq;
 uniform float uWarp;
-uniform float uEdgeWhiteness;
-uniform float uCenterWarmth;
-uniform vec3 uCenterColor;
+
 #define iTime uTime
 #define iResolution uResolution
 
 vec4 buf[8];
+
 float rand(vec2 c){return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453);}
 
-mat3 rgb2yiq=mat3(0.299,0.587,0.114,0.596,-0.274,-0.322,0.211,-0.523,0.312);
-mat3 yiq2rgb=mat3(1.0,0.956,0.621,1.0,-0.272,-0.647,1.0,-1.106,1.703);
+mat3 rgb2yiq=mat3(
+  0.299,0.587,0.114,
+  0.596,-0.274,-0.322,
+  0.211,-0.523,0.312
+);
+
+mat3 yiq2rgb=mat3(
+  1.0,0.956,0.621,
+  1.0,-0.272,-0.647,
+  1.0,-1.106,1.703
+);
 
 vec3 hueShiftRGB(vec3 col,float deg){
     vec3 yiq=rgb2yiq*col;
@@ -71,22 +78,28 @@ void mainImage(out vec4 fragColor,in vec2 fragCoord){
 }
 
 void main(){
-    vec4 col;mainImage(col,gl_FragCoord.xy);
+    vec4 col;
+    mainImage(col,gl_FragCoord.xy);
+
     col.rgb=hueShiftRGB(col.rgb,uHueShift);
+
     float scanline_val=sin(gl_FragCoord.y*uScanFreq)*0.5+0.5;
     col.rgb*=1.-(scanline_val*scanline_val)*uScan;
     col.rgb+=(rand(gl_FragCoord.xy+uTime)-0.5)*uNoise;
-    float y=gl_FragCoord.y/uResolution.y;
-    float centerBand=1.0-smoothstep(0.0,0.66,abs(y-0.5)*2.0);
-    float edgeBand=smoothstep(0.22,0.86,abs(y-0.5)*2.0);
-    col.rgb=mix(col.rgb,uCenterColor,centerBand*uCenterWarmth);
-    col.rgb=mix(col.rgb,vec3(1.0),edgeBand*uEdgeWhiteness);
-    gl_FragColor=vec4(clamp(col.rgb,0.0,1.0),1.0);
+
+    vec3 color = clamp(col.rgb, 0.0, 1.0);
+    float luma = dot(color, vec3(0.299, 0.587, 0.114));
+
+    // Белый фон:
+    // тёмные зоны становятся белыми, яркие формы остаются цветными.
+    float mask = smoothstep(0.18, 0.72, luma);
+    color = mix(vec3(0.953, 0.945, 0.933), color, mask);
+
+    gl_FragColor=vec4(color,1.0);
 }
 `;
 
 interface DarkVeilProps {
-  className?: string;
   hueShift?: number;
   noiseIntensity?: number;
   scanlineIntensity?: number;
@@ -94,13 +107,10 @@ interface DarkVeilProps {
   scanlineFrequency?: number;
   warpAmount?: number;
   resolutionScale?: number;
-  edgeWhiteness?: number;
-  centerWarmth?: number;
-  centerColor?: [number, number, number];
+  className?: string;
 }
 
-export function DarkVeil({
-  className,
+export default function DarkVeil({
   hueShift = 0,
   noiseIntensity = 0,
   scanlineIntensity = 0,
@@ -108,34 +118,25 @@ export function DarkVeil({
   scanlineFrequency = 0,
   warpAmount = 0,
   resolutionScale = 1,
-  edgeWhiteness = 0,
-  centerWarmth = 0,
-  centerColor = [1, 1, 1],
+  className,
 }: DarkVeilProps) {
-  const ref = useRef<HTMLCanvasElement>(null);
+  const ref = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = ref.current;
     const parent = canvas?.parentElement;
 
-    if (!canvas || !parent) {
-      return;
-    }
+    if (!canvas || !parent) return;
 
     const renderer = new Renderer({
-      dpr: Math.max(0.5, Math.min(window.devicePixelRatio, 1.5) * resolutionScale),
+      dpr: Math.min(window.devicePixelRatio, 2),
       canvas,
-      alpha: true,
-      antialias: false,
-      depth: false,
-      stencil: false,
-      powerPreference: "low-power",
+      alpha: false,
     });
 
     const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
-
     const geometry = new Triangle(gl);
+
     const program = new Program(gl, {
       vertex,
       fragment,
@@ -147,23 +148,22 @@ export function DarkVeil({
         uScan: { value: scanlineIntensity },
         uScanFreq: { value: scanlineFrequency },
         uWarp: { value: warpAmount },
-        uEdgeWhiteness: { value: edgeWhiteness },
-        uCenterWarmth: { value: centerWarmth },
-        uCenterColor: { value: new Vec3(...centerColor) },
       },
     });
+
     const mesh = new Mesh(gl, { geometry, program });
 
     const resize = () => {
-      const width = parent.clientWidth;
-      const height = parent.clientHeight;
+      const w = parent.clientWidth;
+      const h = parent.clientHeight;
 
-      if (!width || !height) {
-        return;
-      }
+      if (!w || !h) return;
 
-      renderer.setSize(width, height);
-      program.uniforms.uResolution.value.set(gl.canvas.width, gl.canvas.height);
+      const scaledW = Math.max(1, Math.floor(w * resolutionScale));
+      const scaledH = Math.max(1, Math.floor(h * resolutionScale));
+
+      renderer.setSize(scaledW, scaledH);
+      program.uniforms.uResolution.value.set(scaledW, scaledH);
     };
 
     const resizeObserver = new ResizeObserver(resize);
@@ -171,61 +171,38 @@ export function DarkVeil({
     window.addEventListener("resize", resize);
     resize();
 
-    const startTime = performance.now();
-    let frameId = 0;
-    let isVisible = document.visibilityState !== "hidden";
+    const start = performance.now();
+    let frame = 0;
 
-    const render = () => {
-      if (!isVisible) {
-        frameId = requestAnimationFrame(render);
-        return;
-      }
-
-      program.uniforms.uTime.value = ((performance.now() - startTime) / 1000) * speed;
+    const loop = () => {
+      program.uniforms.uTime.value =
+        ((performance.now() - start) / 1000) * speed;
       program.uniforms.uHueShift.value = hueShift;
       program.uniforms.uNoise.value = noiseIntensity;
       program.uniforms.uScan.value = scanlineIntensity;
       program.uniforms.uScanFreq.value = scanlineFrequency;
       program.uniforms.uWarp.value = warpAmount;
-      program.uniforms.uEdgeWhiteness.value = edgeWhiteness;
-      program.uniforms.uCenterWarmth.value = centerWarmth;
-      program.uniforms.uCenterColor.value.set(...centerColor);
 
       renderer.render({ scene: mesh });
-      frameId = requestAnimationFrame(render);
+      frame = requestAnimationFrame(loop);
     };
 
-    const handleVisibilityChange = () => {
-      isVisible = document.visibilityState !== "hidden";
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    render();
+    loop();
 
     return () => {
-      cancelAnimationFrame(frameId);
+      cancelAnimationFrame(frame);
       resizeObserver.disconnect();
       window.removeEventListener("resize", resize);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
   }, [
-    centerColor,
-    centerWarmth,
-    edgeWhiteness,
     hueShift,
     noiseIntensity,
-    resolutionScale,
-    scanlineFrequency,
     scanlineIntensity,
     speed,
+    scanlineFrequency,
     warpAmount,
+    resolutionScale,
   ]);
 
-  return (
-    <canvas
-      ref={ref}
-      className={cn("absolute inset-0 block h-full w-full", className)}
-    />
-  );
+  return <canvas ref={ref} className={className ?? "darkveil-canvas"} />;
 }

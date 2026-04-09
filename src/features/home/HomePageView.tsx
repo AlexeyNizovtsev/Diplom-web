@@ -6,6 +6,7 @@ import { PrimaryButton } from "@/components/controls/PrimaryButton";
 import { SecondaryButton } from "@/components/controls/SecondaryButton";
 import { ArrowRightIcon } from "@/components/icons/ArrowRightIcon";
 import { SectionHeading } from "@/components/sections/SectionHeading";
+import { glassHeaderSurfaceClasses } from "@/components/surfaces/glassSurface";
 import { supportedMethodologyOrder } from "@/config/pages/home";
 import { SavedResultForm } from "@/features/home/SavedResultForm";
 import { buildMethodologyRoute, routes } from "@/lib/routing/routes";
@@ -49,7 +50,9 @@ export function HomePageView({ content }: HomePageViewProps) {
         </section>
 
         <section>
-          <InfoCard className="rounded-[36px] lg:pb-4 lg:pt-8 ">
+          <InfoCard
+            className={`${glassHeaderSurfaceClasses} rounded-[36px] lg:pb-4 lg:pt-8`}
+          >
             <div className="space-y-8">
               <SectionHeading
                 as="h2"
