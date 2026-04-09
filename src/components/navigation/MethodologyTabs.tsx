@@ -43,7 +43,7 @@ export function MethodologyTabs({
     <nav
       aria-label={ariaLabel}
       className={cn(
-        `overflow-x-auto rounded-[2rem] transition-all duration-200 ${glassHeaderSurfaceClasses} bg-card-secondary/70`,
+        `overflow-x-auto rounded-[2rem] transition-all duration-200 ${glassHeaderSurfaceClasses} bg-card-secondary/75`,
         isCompact
           ? "rounded-[1.2rem] px-1.5 py-1 lg:px-2.5"
           : "px-3 py-3 lg:px-4",

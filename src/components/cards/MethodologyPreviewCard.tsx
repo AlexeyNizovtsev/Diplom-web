@@ -40,7 +40,7 @@ export function MethodologyPreviewCard({
         </div>
         <div className="flex items-end justify-between gap-4">
           <p className="break-words text-sm font-semibold text-text-primary">{action}</p>
-          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border/10 bg-card/60 text-lg font-semibold text-text-primary shadow-soft backdrop-blur-xl transition group-hover:border-dark/20 group-hover:bg-dark/88 group-hover:text-text-on-dark">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full border border-dark bg-dark text-lg font-semibold text-text-on-dark shadow-soft transition group-hover:-translate-x-0.5 group-hover:bg-[#312b24]">
             &gt;
           </span>
         </div>

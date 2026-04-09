@@ -4,7 +4,7 @@ export const methodologies: MethodologiesDictionary = {
   pageIntro: {
     title: "Methodology reference",
     description:
-      "Use this page as a practical reference after the recommendation: what the method is, how to begin, what it requires, and where it fits."
+      "Use this page as a practical reference after the recommendation: what the method is, how to begin, what it requires, and where it fits"
   },
   tabsLabel: "Methodology tabs",
   sidebarLabel: "Methodology sections",

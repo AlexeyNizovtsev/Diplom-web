@@ -98,6 +98,36 @@ export interface HowItWorksDictionary {
   };
 }
 
+export interface AssessmentMetaStatContent {
+  label: string;
+  value: string;
+}
+
+export interface AssessmentDictionary {
+  pageTitle: string;
+  backPageLabel: string;
+  introCard: {
+    title: string;
+    description: string[];
+    stats: {
+      format: AssessmentMetaStatContent;
+      duration: AssessmentMetaStatContent;
+    };
+    beforeYouStartTitle: string;
+    beforeYouStartItems: string[];
+    primaryCta: string;
+  };
+  blockPlaceholder: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    blockIdLabel: string;
+    nextStepTitle: string;
+    nextStepItems: string[];
+    returnToIntro: string;
+  };
+}
+
 export interface PlaceholderPageContent {
   title: string;
   description: string;
@@ -194,6 +224,7 @@ export interface AppDictionary {
   nav: NavigationDictionary;
   home: HomeDictionary;
   howItWorks: HowItWorksDictionary;
+  assessment: AssessmentDictionary;
   aboutModel: AboutModelDictionary;
   methodologies: MethodologiesDictionary;
   placeholders: PlaceholdersDictionary;

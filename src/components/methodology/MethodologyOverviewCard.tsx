@@ -2,7 +2,10 @@ import { QuickFitPanel } from "@/components/methodology/QuickFitPanel";
 import { glassPanelSurfaceClasses } from "@/components/surfaces/glassSurface";
 import { formatMethodologyText } from "@/lib/methodology/formatMethodologyText";
 import { cn } from "@/lib/utils";
-import type { MethodologyOverview, MethodologyQuickFit } from "@/types/methodology";
+import type {
+  MethodologyOverview,
+  MethodologyQuickFit,
+} from "@/types/methodology";
 
 interface MethodologyOverviewCardProps {
   eyebrow: string;
@@ -19,18 +22,20 @@ export function MethodologyOverviewCard({
   typeLabel,
   overview,
   quickFit,
-  className
+  className,
 }: MethodologyOverviewCardProps) {
   return (
     <div
       className={cn(
         `rounded-[2rem] px-6 py-6 lg:px-8 lg:py-7 ${glassPanelSurfaceClasses}`,
-        className
+        className,
       )}
     >
       <div className="space-y-6">
         <div className="space-y-5">
-          <p className="text-xs font-bold uppercase tracking-[0.26em] text-accent">{eyebrow}</p>
+          <p className="text-xs font-bold uppercase tracking-[0.26em] text-accent">
+            {eyebrow}
+          </p>
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-5xl space-y-4">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
@@ -59,7 +64,7 @@ export function MethodologyOverviewCard({
           {overview.signalTags.map((tag) => (
             <span
               key={tag.id}
-              className="rounded-[1.1rem] border border-border/12 bg-card/80 px-4 py-2 text-sm font-semibold text-text-primary backdrop-blur-xl lg:text-[0.95rem]"
+              className="rounded-[1.1rem] border border-dark bg-dark px-4 py-2 text-sm font-semibold text-text-on-dark shadow-none lg:text-[0.95rem]"
             >
               {tag.label}
             </span>
@@ -68,18 +73,25 @@ export function MethodologyOverviewCard({
 
         <div className="space-y-4">
           {overview.entries.map((entry) => (
-            <div key={entry.id} className="rounded-[1.6rem] border border-border/12 bg-card/80 px-5 py-5 backdrop-blur-xl">
+            <div
+              key={entry.id}
+              className="rounded-[1.6rem] border border-border/12 bg-card/80 px-5 py-5 backdrop-blur-xl"
+            >
               <div className="flex flex-col gap-2 lg:flex-row lg:items-start lg:gap-4">
                 <h3 className="w-full max-w-[12.5rem] shrink-0 text-xl font-bold tracking-tight text-text-primary">
                   {formatMethodologyText(entry.title)}
                 </h3>
-                <p className="text-[0.98rem] leading-7 text-text-secondary">{formatMethodologyText(entry.description)}</p>
+                <p className="text-[0.98rem] leading-7 text-text-secondary">
+                  {formatMethodologyText(entry.description)}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
-        {quickFit ? <QuickFitPanel title={quickFit.title} summary={quickFit.summary} /> : null}
+        {quickFit ? (
+          <QuickFitPanel title={quickFit.title} summary={quickFit.summary} />
+        ) : null}
       </div>
     </div>
   );

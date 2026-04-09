@@ -16,7 +16,7 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "Methodology Match",
-  description: "Rule-based methodology selection for software project context."
+  description: "Rule-based methodology selection for software project context"
 };
 
 export default async function RootLayout({

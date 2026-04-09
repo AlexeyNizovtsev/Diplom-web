@@ -36,7 +36,7 @@ export function SectionHeading({
       {eyebrow ? (
         <p
           className={cn(
-            "text-xs font-bold uppercase tracking-[0.24em] text-accent",
+            "text-[length:var(--font-size-label)] font-bold uppercase tracking-[0.24em] text-accent",
             eyebrowClassName,
           )}
         >
@@ -46,7 +46,7 @@ export function SectionHeading({
       <div className="space-y-3">
         <HeadingTag
           className={cn(
-            "text-balance break-words text-4xl font-extrabold tracking-tight text-text-primary lg:text-5xl",
+            "text-balance break-words text-[length:var(--font-size-page-title)] font-extrabold leading-[0.98] tracking-tight text-text-primary lg:text-[length:var(--font-size-display)]",
             titleClassName,
           )}
         >
@@ -55,7 +55,7 @@ export function SectionHeading({
         {description ? (
           <p
             className={cn(
-              "break-words text-base leading-7 text-text-secondary lg:text-lg",
+              "break-words text-[length:var(--font-size-body-lg)] leading-[1.45] text-text-secondary",
               descriptionClassName,
             )}
           >

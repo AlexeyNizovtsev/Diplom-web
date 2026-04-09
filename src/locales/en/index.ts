@@ -1,3 +1,4 @@
+import { assessment } from "@/locales/en/assessment";
 import { aboutModel } from "@/locales/en/aboutModel";
 import { howItWorks } from "@/locales/en/howItWorks";
 import { home } from "@/locales/en/home";
@@ -10,6 +11,7 @@ export const enDictionary: AppDictionary = {
   nav,
   home,
   howItWorks,
+  assessment,
   aboutModel,
   methodologies,
   placeholders

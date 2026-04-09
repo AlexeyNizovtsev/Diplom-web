@@ -16,6 +16,25 @@
   --app-header-surface-height: 5.5rem;
   --methodologies-sticky-top: calc(var(--app-header-top-gap) + var(--app-header-surface-height) + 0.75rem);
   --methodology-scroll-offset: calc(var(--methodologies-sticky-top) + 4.25rem);
+  --font-size-display: 3rem;
+  --font-size-page-title: 2.25rem;
+  --font-size-section-title: 1.75rem;
+  --font-size-card-title: 1.375rem;
+  --font-size-body-lg: 1.0625rem;
+  --font-size-body: 1rem;
+  --font-size-label: 0.8125rem;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --font-size-display: 3.75rem;
+    --font-size-page-title: 2.75rem;
+    --font-size-section-title: 2rem;
+    --font-size-card-title: 1.625rem;
+    --font-size-body-lg: 1.1875rem;
+    --font-size-body: 1rem;
+    --font-size-label: 0.875rem;
+  }
 }
 
 * {
@@ -34,6 +53,7 @@ body {
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.6), transparent 34%),
     linear-gradient(180deg, #f6f1ea 0%, #f4efe8 100%);
   color: var(--text-primary);
+  font-size: var(--font-size-body);
   font-family: var(--font-sans), sans-serif;
 }
 

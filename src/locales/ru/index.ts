@@ -1,3 +1,4 @@
+import { assessment } from "@/locales/ru/assessment";
 import { aboutModel } from "@/locales/ru/aboutModel";
 import { howItWorks } from "@/locales/ru/howItWorks";
 import { home } from "@/locales/ru/home";
@@ -10,6 +11,7 @@ export const ruDictionary: AppDictionary = {
   nav,
   home,
   howItWorks,
+  assessment,
   aboutModel,
   methodologies,
   placeholders
