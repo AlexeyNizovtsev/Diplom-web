@@ -46,7 +46,7 @@ export function SectionHeading({
       <div className="space-y-3">
         <HeadingTag
           className={cn(
-            "max-w-4xl text-balance text-4xl font-extrabold tracking-tight text-text-primary lg:text-5xl",
+            "text-balance break-words text-4xl font-extrabold tracking-tight text-text-primary lg:text-5xl",
             titleClassName,
           )}
         >
@@ -55,7 +55,7 @@ export function SectionHeading({
         {description ? (
           <p
             className={cn(
-              "max-w-3xl text-base leading-7 text-text-secondary lg:text-lg",
+              "break-words text-base leading-7 text-text-secondary lg:text-lg",
               descriptionClassName,
             )}
           >

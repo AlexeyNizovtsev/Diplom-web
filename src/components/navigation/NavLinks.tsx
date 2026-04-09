@@ -21,21 +21,21 @@ export function NavLinks({ nav }: NavLinksProps) {
   const pathname = usePathname();
 
   return (
-    <div className="flex min-w-0 items-center gap-6 lg:gap-10">
+    <div className="flex min-w-0 items-center gap-4 lg:gap-6 xl:gap-10">
       <Link
         href={routes.home}
-        className="flex shrink-0 items-center gap-3 text-[1.35rem] font-extrabold tracking-[-0.03em] text-text-primary"
+        className="flex min-w-0 flex-1 items-center gap-3 text-[1.2rem] font-extrabold tracking-[-0.03em] text-text-primary lg:text-[1.35rem]"
       >
-        <span className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-dark text-text-on-dark">
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-dark text-text-on-dark">
           <span className="h-3.5 w-3.5 rounded-full bg-text-on-dark/90" />
           <span className="absolute bottom-2 right-2 h-2.5 w-2.5 rounded-full bg-accent" />
         </span>
-        <span>{nav.productName}</span>
+        <span className="truncate whitespace-nowrap">{nav.productName}</span>
       </Link>
 
       <nav
         aria-label={nav.primaryNavigationLabel}
-        className="flex flex-wrap items-center gap-2"
+        className="flex shrink-0 flex-nowrap items-center gap-1.5 whitespace-nowrap lg:gap-2"
       >
         {navItems.map((item) => {
           const isActive = pathname === item.href;
@@ -45,7 +45,7 @@ export function NavLinks({ nav }: NavLinksProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "rounded-full px-4 py-2 text-[15px] font-bold tracking-[-0.01em] transition",
+                "shrink-0 rounded-full px-3 py-2 text-sm font-bold tracking-[-0.01em] transition lg:px-4 lg:text-[15px]",
                 isActive
                   ? "bg-dark text-text-on-dark"
                   : "text-[#4f4a43] hover:bg-white/70",

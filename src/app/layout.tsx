@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   description: "Rule-based methodology selection for software project context."
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = getLocale();
+  const locale = await getLocale();
   const dictionary = getDictionary(locale);
 
   return (

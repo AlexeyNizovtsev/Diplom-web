@@ -1,6 +1,7 @@
-import { PlaceholderPageView } from "@/features/shared/PlaceholderPageView";
+import { MethodologiesPageView } from "@/features/methodologies/MethodologiesPageView";
 import { getDictionary } from "@/lib/i18n/getDictionary";
 import { getLocale } from "@/lib/i18n/getLocale";
+import { resolveMethodologyId } from "@/lib/methodology/resolveMethodologyId";
 
 interface MethodologiesPageProps {
   searchParams?: {
@@ -8,17 +9,15 @@ interface MethodologiesPageProps {
   };
 }
 
-export default function MethodologiesPage({ searchParams }: MethodologiesPageProps) {
-  const locale = getLocale();
+export default async function MethodologiesPage({ searchParams }: MethodologiesPageProps) {
+  const locale = await getLocale();
   const dictionary = getDictionary(locale);
+  const selectedMethodologyId = resolveMethodologyId(searchParams?.methodology);
 
   return (
-    <PlaceholderPageView
-      content={dictionary.placeholders.methodologies}
-      primaryActionLabel={dictionary.placeholders.primaryAction}
-      returnHomeLabel={dictionary.placeholders.returnHome}
-      metadataLabel={searchParams?.methodology ? dictionary.placeholders.selectedMethodologyLabel : undefined}
-      metadataValue={searchParams?.methodology}
+    <MethodologiesPageView
+      content={dictionary.methodologies}
+      selectedMethodologyId={selectedMethodologyId}
     />
   );
 }

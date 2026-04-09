@@ -8,8 +8,8 @@ interface ResultsPageProps {
   };
 }
 
-export default function ResultsPage({ searchParams }: ResultsPageProps) {
-  const locale = getLocale();
+export default async function ResultsPage({ searchParams }: ResultsPageProps) {
+  const locale = await getLocale();
   const dictionary = getDictionary(locale);
 
   return (

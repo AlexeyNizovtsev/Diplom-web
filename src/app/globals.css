@@ -3,15 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --bg-page: #f4efe8;
-  --bg-card: #fbf8f3;
-  --bg-card-secondary: #efe5d8;
-  --bg-dark: #201b17;
-  --text-primary: #1f1b17;
-  --text-secondary: #655d54;
-  --text-on-dark: #f7f1e8;
-  --border-subtle: #d8cdbf;
-  --accent-primary: #c47b45;
+  --bg-page: 35 33% 93%;
+  --bg-card: 36 45% 97%;
+  --bg-card-secondary: 33 42% 90%;
+  --bg-dark: 24 16% 11%;
+  --text-primary: 30 15% 11%;
+  --text-secondary: 32 9% 36%;
+  --text-on-dark: 36 47% 94%;
+  --border-subtle: 33 25% 80%;
+  --accent-primary: 25 52% 52%;
 }
 
 * {
@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-y: scroll;
 }
 
 body {
@@ -45,4 +46,3 @@ input {
 ::selection {
   background: rgba(196, 123, 69, 0.2);
 }
-

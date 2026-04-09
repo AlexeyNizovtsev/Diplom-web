@@ -31,7 +31,7 @@ export function SavedResultForm({ label, placeholder, action }: SavedResultFormP
           id="saved-result-code"
           name="saved-result-code"
           placeholder={placeholder}
-          className="h-16"
+          className="h-16 lg:flex-1"
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={(event) => {
@@ -40,7 +40,7 @@ export function SavedResultForm({ label, placeholder, action }: SavedResultFormP
             }
           }}
         />
-        <PrimaryButton className="h-16 lg:min-w-[248px]" onClick={handleSubmit}>
+        <PrimaryButton className="h-16 w-full lg:w-auto lg:min-w-[248px]" onClick={handleSubmit}>
           {action}
         </PrimaryButton>
       </div>

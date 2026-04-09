@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from "react";
 
+import { glassPanelSurfaceClasses } from "@/components/surfaces/glassSurface";
 import { cn } from "@/lib/utils";
 
 interface InfoCardProps extends PropsWithChildren {
@@ -8,7 +9,9 @@ interface InfoCardProps extends PropsWithChildren {
 
 export function InfoCard({ children, className }: InfoCardProps) {
   return (
-    <div className={cn("rounded-4xl border border-border bg-card p-6 shadow-soft lg:p-7", className)}>{children}</div>
+    <div className={cn("rounded-4xl p-6 lg:p-7", glassPanelSurfaceClasses, className)}>
+      {children}
+    </div>
   );
 }
 

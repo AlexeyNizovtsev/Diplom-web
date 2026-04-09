@@ -1,17 +1,11 @@
-import { PlaceholderPageView } from "@/features/shared/PlaceholderPageView";
+import { AboutModelPageView } from "@/features/about-model/AboutModelPageView";
 import { getDictionary } from "@/lib/i18n/getDictionary";
 import { getLocale } from "@/lib/i18n/getLocale";
 
-export default function AboutModelPage() {
-  const locale = getLocale();
+export default async function AboutModelPage() {
+  const locale = await getLocale();
   const dictionary = getDictionary(locale);
 
-  return (
-    <PlaceholderPageView
-      content={dictionary.placeholders.aboutModel}
-      primaryActionLabel={dictionary.placeholders.primaryAction}
-      returnHomeLabel={dictionary.placeholders.returnHome}
-    />
-  );
+  return <AboutModelPageView content={dictionary.aboutModel} />;
 }
 

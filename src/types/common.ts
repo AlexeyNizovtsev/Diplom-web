@@ -1,4 +1,9 @@
-import type { MethodologyId, MethodologyPreviewContent } from "@/types/methodology";
+import type {
+  MethodologyContentMap,
+  MethodologyId,
+  MethodologyPreviewContent,
+  MethodologySectionId
+} from "@/types/methodology";
 
 export type Locale = "en" | "ru";
 
@@ -100,6 +105,78 @@ export interface PlaceholderPageContent {
   helper: string;
 }
 
+export interface AboutModelDimensionContent {
+  label: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutModelDictionary {
+  pageIntro: {
+    title: string;
+    description: string;
+  };
+  overview: {
+    title: string;
+    description: string;
+    items: string[];
+  };
+  dimensions: {
+    title: string;
+    description: string;
+    scaleNote: string;
+    items: Record<string, AboutModelDimensionContent>;
+  };
+  rankedOutput: {
+    title: string;
+    description: string;
+    items: string[];
+  };
+  explainability: {
+    title: string;
+    description: string;
+    themes: {
+      explainability: {
+        title: string;
+        description: string;
+        items: string[];
+      };
+      sensitivity: {
+        title: string;
+        description: string;
+        items: string[];
+      };
+    };
+  };
+  limitations: {
+    title: string;
+    description: string;
+    items: string[];
+  };
+  closing: {
+    title: string;
+    description: string;
+    actions: {
+      assessment: string;
+      howItWorks: string;
+      methodologies: string;
+    };
+  };
+}
+
+export interface MethodologiesDictionary {
+  pageIntro: {
+    title: string;
+    description: string;
+  };
+  tabsLabel: string;
+  sidebarLabel: string;
+  coreElementsLabel: string;
+  firstStepLabelPrefix: string;
+  sections: Record<MethodologySectionId, string>;
+  content: MethodologyContentMap;
+}
+
 export interface PlaceholdersDictionary {
   assessment: PlaceholderPageContent;
   methodologies: PlaceholderPageContent;
@@ -115,5 +192,7 @@ export interface AppDictionary {
   nav: NavigationDictionary;
   home: HomeDictionary;
   howItWorks: HowItWorksDictionary;
+  aboutModel: AboutModelDictionary;
+  methodologies: MethodologiesDictionary;
   placeholders: PlaceholdersDictionary;
 }
