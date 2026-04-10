@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -15,73 +15,91 @@ interface SidebarNavProps {
 }
 
 export function SidebarNav({ items, ariaLabel }: SidebarNavProps) {
-  const [activeId, setActiveId] = useState(items[0]?.id);
+  const firstItemId = items[0]?.id;
+  const [activeId, setActiveId] = useState(firstItemId);
+
+  const itemIds = useMemo(() => items.map((item) => item.id), [items]);
 
   useEffect(() => {
-    const syncHash = () => {
+    if (!items.length) return;
+
+    const updateHashSelection = () => {
       const hash = window.location.hash.slice(1);
 
-      if (hash && items.some((item) => item.id === hash)) {
-        setActiveId(hash);
+      if (hash && itemIds.includes(hash)) {
+        setActiveId((prev) => (prev === hash ? prev : hash));
       }
     };
 
-    syncHash();
-    window.addEventListener("hashchange", syncHash);
+    updateHashSelection();
+    window.addEventListener("hashchange", updateHashSelection);
+
+    const sections = itemIds
+      .map((id) => document.getElementById(id))
+      .filter((element): element is HTMLElement => Boolean(element));
+
+    if (!sections.length) {
+      return () => {
+        window.removeEventListener("hashchange", updateHashSelection);
+      };
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
+        const visible = entries.filter((entry) => entry.isIntersecting);
 
-        if (!visibleEntries.length) {
-          return;
-        }
+        if (!visible.length) return;
 
-        const nextActive = visibleEntries
-          .sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0]
-          ?.target.id;
+        const bestMatch = visible.reduce((best, current) => {
+          if (!best) return current;
+          return current.intersectionRatio > best.intersectionRatio
+            ? current
+            : best;
+        });
 
-        if (nextActive) {
-          setActiveId(nextActive);
-        }
+        const nextId = bestMatch.target.id;
+
+        setActiveId((prev) => (prev === nextId ? prev : nextId));
       },
       {
-        rootMargin: "-25% 0px -55% 0px",
-        threshold: [0.2, 0.45, 0.7]
-      }
+        root: null,
+        rootMargin: "-18% 0px -55% 0px",
+        threshold: [0, 0.15, 0.3, 0.45, 0.6, 0.75],
+      },
     );
 
-    items.forEach((item) => {
-      const element = document.getElementById(item.id);
-
-      if (element) {
-        observer.observe(element);
-      }
-    });
+    sections.forEach((section) => observer.observe(section));
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("hashchange", syncHash);
+      window.removeEventListener("hashchange", updateHashSelection);
     };
-  }, [items]);
+  }, [itemIds, items.length]);
 
   return (
     <nav aria-label={ariaLabel} className="space-y-1.5">
-      {items.map((item) => (
-        <a
-          key={item.id}
-          href={`#${item.id}`}
-          onClick={() => setActiveId(item.id)}
-          className={cn(
-            "block rounded-[1rem] px-3 py-2 text-sm font-semibold transition lg:px-3.5 lg:text-[0.98rem]",
-            activeId === item.id
-              ? "border-l-2 border-accent bg-transparent text-text-primary"
-              : "border-l-2 border-transparent bg-transparent text-text-secondary hover:border-[#c58b3a] hover:text-text-primary"
-          )}
-        >
-          {item.label}
-        </a>
-      ))}
+      {items.map((item) => {
+        const isActive = activeId === item.id;
+
+        return (
+          <a
+            key={item.id}
+            href={`#${item.id}`}
+            onClick={() => {
+              setActiveId((prev) => (prev === item.id ? prev : item.id));
+            }}
+            className={cn(
+              "block rounded-[1rem] px-3 py-2 text-sm font-semibold transition-colors lg:px-3.5 lg:text-[0.98rem]",
+              isActive
+                ? "border-l-2 border-accent text-text-primary"
+                : "border-l-2 border-transparent text-text-secondary hover:border-[#c58b3a] hover:text-text-primary",
+            )}
+            aria-current={isActive ? "true" : undefined}
+          >
+            {item.label}
+          </a>
+        );
+      })}
     </nav>
   );
 }
