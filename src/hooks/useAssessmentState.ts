@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+import {
+  createEmptyAssessmentProgress,
+  getMissingRequiredQuestionIds,
+  getSelectedOptionIds
+} from "@/features/assessment/assessmentSelectors";
 import { loadAssessmentProgress, saveAssessmentProgress } from "@/lib/storage/assessmentProgress";
 import type {
-  AssessmentBlockId,
   AssessmentProgress,
   QuestionnaireBlockConfig,
   QuestionnaireConfig,
@@ -16,29 +20,18 @@ interface UseAssessmentStateProps {
   currentBlock: QuestionnaireBlockConfig;
 }
 
-function createEmptyProgress(
-  questionnaireVersion: string,
-  currentBlockId: AssessmentBlockId
-): AssessmentProgress {
-  return {
-    questionnaireVersion,
-    currentBlockId,
-    answers: {}
-  };
-}
-
 export function useAssessmentState({
   questionnaire,
   currentBlock
 }: UseAssessmentStateProps) {
   const [progress, setProgress] = useState<AssessmentProgress>(
-    createEmptyProgress(questionnaire.version, currentBlock.id)
+    createEmptyAssessmentProgress(questionnaire.version, currentBlock.id)
   );
   const [hasHydrated, setHasHydrated] = useState(false);
 
   useEffect(() => {
-    const savedProgress = loadAssessmentProgress(questionnaire.version);
-    const nextProgress = createEmptyProgress(questionnaire.version, currentBlock.id);
+    const savedProgress = loadAssessmentProgress(questionnaire);
+    const nextProgress = createEmptyAssessmentProgress(questionnaire.version, currentBlock.id);
 
     if (savedProgress && savedProgress.questionnaireVersion === questionnaire.version) {
       nextProgress.answers = savedProgress.answers ?? {};
@@ -46,7 +39,7 @@ export function useAssessmentState({
 
     setProgress(nextProgress);
     setHasHydrated(true);
-  }, [currentBlock.id, questionnaire.version]);
+  }, [currentBlock.id, questionnaire]);
 
   useEffect(() => {
     if (!hasHydrated) {
@@ -71,21 +64,21 @@ export function useAssessmentState({
     }));
   };
 
-  const selectedOptionIds = Object.fromEntries(
-    Object.entries(progress.answers).map(([questionId, answer]) => [questionId, answer.selectedOptionId])
+  const selectedOptionIds = useMemo(
+    () => getSelectedOptionIds(progress.answers),
+    [progress.answers]
+  );
+  const missingRequiredQuestionIds = useMemo(
+    () => getMissingRequiredQuestionIds(currentBlock, progress.answers),
+    [currentBlock, progress.answers]
   );
 
-  const isCurrentBlockComplete = currentBlock.questions.every((question) => {
-    if (!question.required) {
-      return true;
-    }
-
-    return Boolean(progress.answers[question.id]);
-  });
-
   return {
+    hasHydrated,
+    progress,
     selectedOptionIds,
-    isCurrentBlockComplete,
+    missingRequiredQuestionIds,
+    isCurrentBlockComplete: missingRequiredQuestionIds.length === 0,
     selectAnswer
   };
 }

@@ -31,8 +31,7 @@ export const home: HomeDictionary = {
     label: "Saved result code",
     placeholder: "Enter result code",
     action: "Open result",
-    helper:
-      "Result restore logic is still a placeholder in this first frontend pass",
+    helper: "Saved results are restored from local storage on this device",
   },
   methodologies: {
     title: "Supported methodologies",

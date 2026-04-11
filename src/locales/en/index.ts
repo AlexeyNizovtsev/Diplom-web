@@ -5,6 +5,7 @@ import { home } from "@/locales/en/home";
 import { methodologies } from "@/locales/en/methodologies";
 import { nav } from "@/locales/en/nav";
 import { placeholders } from "@/locales/en/placeholders";
+import { results } from "@/locales/en/results";
 import type { AppDictionary } from "@/types/common";
 
 export const enDictionary: AppDictionary = {
@@ -14,6 +15,7 @@ export const enDictionary: AppDictionary = {
   assessment,
   aboutModel,
   methodologies,
+  results,
   placeholders
 };
 

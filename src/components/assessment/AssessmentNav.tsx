@@ -7,7 +7,7 @@ interface AssessmentNavProps {
   nextLabel: string;
   autosaveLabel: string;
   validationMessage: string;
-  isNextDisabled: boolean;
+  showValidationMessage: boolean;
   onBack: () => void;
   onNext: () => void;
 }
@@ -17,14 +17,18 @@ export function AssessmentNav({
   nextLabel,
   autosaveLabel,
   validationMessage,
-  isNextDisabled,
+  showValidationMessage,
   onBack,
-  onNext
+  onNext,
 }: AssessmentNavProps) {
   return (
-    <div className="space-y-4 border-t border-[#ead8c9] pt-6">
+    <div className="space-y-4">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <SecondaryButton type="button" onClick={onBack} className="min-w-[11rem] justify-center">
+        <SecondaryButton
+          type="button"
+          onClick={onBack}
+          className="min-w-[11rem] justify-center"
+        >
           {backLabel}
         </SecondaryButton>
         <div className="order-last lg:order-none">
@@ -33,14 +37,18 @@ export function AssessmentNav({
         <PrimaryButton
           type="button"
           onClick={onNext}
-          disabled={isNextDisabled}
           className="min-w-[13rem] justify-center"
         >
           {nextLabel}
         </PrimaryButton>
       </div>
-      {isNextDisabled ? (
-        <p className="text-sm leading-6 text-[#8b6a46] lg:text-[0.98rem]">{validationMessage}</p>
+      {showValidationMessage ? (
+        <p
+          aria-live="polite"
+          className="text-sm leading-6 text-[#8b6a46] lg:text-[0.98rem]"
+        >
+          {validationMessage}
+        </p>
       ) : null}
     </div>
   );

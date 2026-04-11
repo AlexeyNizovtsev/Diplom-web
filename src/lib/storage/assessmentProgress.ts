@@ -1,11 +1,12 @@
 import { isAssessmentBlockId } from "@/config/questionnaire";
-import type { AssessmentProgress } from "@/types/questionnaire";
+import { normalizeStoredAnswers } from "@/features/assessment/assessmentSelectors";
+import type { AssessmentProgress, QuestionnaireConfig } from "@/types/questionnaire";
 
 const ASSESSMENT_STORAGE_KEY = "methodologyMatch.assessment.v1";
 
 function isSafeAssessmentProgress(
   value: unknown,
-  questionnaireVersion: string
+  questionnaire: QuestionnaireConfig
 ): value is AssessmentProgress {
   if (!value || typeof value !== "object") {
     return false;
@@ -13,7 +14,7 @@ function isSafeAssessmentProgress(
 
   const candidate = value as AssessmentProgress;
 
-  if (candidate.questionnaireVersion !== questionnaireVersion) {
+  if (candidate.questionnaireVersion !== questionnaire.version) {
     return false;
   }
 
@@ -21,24 +22,10 @@ function isSafeAssessmentProgress(
     return false;
   }
 
-  if (!candidate.answers || typeof candidate.answers !== "object") {
-    return false;
-  }
-
-  return Object.values(candidate.answers).every((answer) => {
-    if (!answer || typeof answer !== "object") {
-      return false;
-    }
-
-    return (
-      typeof answer.questionId === "string" &&
-      typeof answer.selectedOptionId === "string" &&
-      Array.isArray(answer.resolvedSignalMapping)
-    );
-  });
+  return Boolean(normalizeStoredAnswers(questionnaire, candidate.answers));
 }
 
-export function loadAssessmentProgress(questionnaireVersion: string) {
+export function loadAssessmentProgress(questionnaire: QuestionnaireConfig) {
   if (typeof window === "undefined") {
     return null;
   }
@@ -52,12 +39,16 @@ export function loadAssessmentProgress(questionnaireVersion: string) {
 
     const parsedProgress = JSON.parse(rawProgress) as unknown;
 
-    if (!isSafeAssessmentProgress(parsedProgress, questionnaireVersion)) {
+    if (!isSafeAssessmentProgress(parsedProgress, questionnaire)) {
       window.localStorage.removeItem(ASSESSMENT_STORAGE_KEY);
       return null;
     }
 
-    return parsedProgress;
+    return {
+      questionnaireVersion: parsedProgress.questionnaireVersion,
+      currentBlockId: parsedProgress.currentBlockId,
+      answers: normalizeStoredAnswers(questionnaire, parsedProgress.answers) ?? {}
+    };
   } catch {
     return null;
   }

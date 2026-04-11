@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 interface AnswerOptionCardProps {
   label: string;
   description: string;
-  selectedLabel: string;
   isSelected: boolean;
   onSelect: () => void;
 }
@@ -11,7 +10,6 @@ interface AnswerOptionCardProps {
 export function AnswerOptionCard({
   label,
   description,
-  selectedLabel,
   isSelected,
   onSelect
 }: AnswerOptionCardProps) {
@@ -25,7 +23,7 @@ export function AnswerOptionCard({
         "flex min-h-[8.5rem] w-full flex-col items-start justify-between rounded-[26px] border px-5 py-4 text-left transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         isSelected
           ? "border-[#111318] bg-[#111318] text-white shadow-soft"
-          : "border-[#d9d5d0] bg-white text-[#1c1f25] hover:border-[#c7b29e] hover:bg-[#fffaf5]"
+          : "border-[#d9d5d0] bg-white/88 text-[#1c1f25] backdrop-blur-xl hover:border-[#c7b29e] hover:bg-[#fffaf5]"
       )}
     >
       <div className="flex w-full items-start justify-between gap-3">
@@ -35,13 +33,26 @@ export function AnswerOptionCard({
         <span
           aria-hidden="true"
           className={cn(
-            "inline-flex rounded-full border px-2.5 py-1 text-[0.72rem] font-bold uppercase tracking-[0.18em]",
+            "inline-flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
             isSelected
-              ? "border-white/25 bg-white/12 text-white"
+              ? "border-white/30 bg-white/12 text-white"
               : "border-[#e8ded4] bg-[#faf5ef] text-transparent"
           )}
         >
-          {isSelected ? selectedLabel : "\u00A0"}
+          <svg
+            viewBox="0 0 16 16"
+            className={cn("h-4 w-4", isSelected ? "opacity-100" : "opacity-0")}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.5 8.25L6.5 11.25L12.5 5.25"
+              stroke="currentColor"
+              strokeWidth="1.9"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </span>
       </div>
       <span

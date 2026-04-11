@@ -1,7 +1,6 @@
 import { HomeBackground } from "@/components/backgrounds/HomeBackground";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { SectionHeading } from "@/components/sections/SectionHeading";
-import { questionnaireConfig } from "@/config/questionnaire";
 import { AssessmentIntroEntryPoint } from "@/features/assessment/AssessmentIntroEntryPoint";
 import type { AssessmentDictionary } from "@/types/common";
 
@@ -32,7 +31,6 @@ export function AssessmentIntroPageView({
           <AssessmentIntroEntryPoint
             content={content}
             defaultStartHref={startHref}
-            questionnaireVersion={questionnaireConfig.version}
           />
         </div>
       </PageContainer>

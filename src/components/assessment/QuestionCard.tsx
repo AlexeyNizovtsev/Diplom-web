@@ -1,3 +1,5 @@
+import { glassFieldSurfaceClasses } from "@/components/surfaces/glassSurface";
+import { cn } from "@/lib/utils";
 import type { PropsWithChildren } from "react";
 
 interface QuestionCardProps extends PropsWithChildren {
@@ -13,7 +15,13 @@ export function QuestionCard({
   children
 }: QuestionCardProps) {
   return (
-    <section className="rounded-[32px] border border-[#e7d1bf] bg-[#fbf8f5] px-5 py-5 lg:px-8 lg:py-7">
+    <section
+      className={cn(
+        "rounded-[32px] px-5 py-5 lg:px-8 lg:py-7",
+        glassFieldSurfaceClasses,
+        "border-[#e7d1bf]/70 bg-[#fbf8f5]/76"
+      )}
+    >
       <div className="space-y-3">
         <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#8b6a46] lg:text-[0.95rem]">
           {label}

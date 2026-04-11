@@ -5,6 +5,7 @@ import { home } from "@/locales/ru/home";
 import { methodologies } from "@/locales/ru/methodologies";
 import { nav } from "@/locales/ru/nav";
 import { placeholders } from "@/locales/ru/placeholders";
+import { results } from "@/locales/ru/results";
 import type { AppDictionary } from "@/types/common";
 
 export const ruDictionary: AppDictionary = {
@@ -14,5 +15,6 @@ export const ruDictionary: AppDictionary = {
   assessment,
   aboutModel,
   methodologies,
+  results,
   placeholders
 };

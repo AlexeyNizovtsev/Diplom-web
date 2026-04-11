@@ -3,6 +3,7 @@ import type {
   MethodologyPreviewContent,
   MethodologySectionId
 } from "@/types/methodology";
+import type { FitTier, ResultReasonId, SensitivityStrength } from "@/types/result";
 import type { AssessmentBlockId } from "@/types/questionnaire";
 
 export type Locale = "en" | "ru";
@@ -229,6 +230,74 @@ export interface MethodologiesDictionary {
   sections: Record<MethodologySectionId, string>;
 }
 
+export interface ResultsDictionary {
+  pageIntro: {
+    title: string;
+    description: string;
+  };
+  rankedList: {
+    title: string;
+    description: string;
+  };
+  fitLabels: Record<FitTier, string>;
+  fitStrengthLabels: Record<SensitivityStrength, string>;
+  bestFit: {
+    badge: string;
+    keySignalsLabel: string;
+    dimensionsLabel: string;
+    outcomeLabel: string;
+    fitStrengthLabel: string;
+    closestAlternativeLabel: string;
+    mostSensitiveDimensionLabel: string;
+    pointsLabel: string;
+    actionLabel: string;
+  };
+  alternatives: {
+    title: string;
+    description: string;
+    topDimensionsLabel: string;
+  };
+  topActions: {
+    download: string;
+    copyLink: string;
+    copiedLink: string;
+    retakeAssessment: string;
+    pdfAction: string;
+    jsonAction: string;
+    placeholderNote: string;
+  };
+  emptyState: {
+    title: string;
+    description: string;
+    requestedCodeLabel: string;
+    openAssessment: string;
+    returnHome: string;
+  };
+  saveSection: {
+    title: string;
+    description: string;
+    resultCodeLabel: string;
+    exportLabel: string;
+  };
+  narrative: {
+    fitLabelKeyPrefix: string;
+    shortRationaleTemplate: string;
+    topOverviewTemplate: string;
+    alternativeOverviewTemplate: string;
+    topTradeoffTemplate: string;
+    alternativeTradeoffTemplate: string;
+    sensitivityTemplate: string;
+    reasonPhrases: Record<ResultReasonId, string>;
+    outcomeTexts: Record<MethodologyId, string>;
+  };
+  dimensions: Record<
+    string,
+    {
+      summaries: Record<0 | 1 | 2 | 3, string>;
+    }
+  >;
+}
+
 export interface PlaceholdersDictionary {
   assessment: PlaceholderPageContent;
   methodologies: PlaceholderPageContent;
@@ -247,5 +316,6 @@ export interface AppDictionary {
   assessment: AssessmentDictionary;
   aboutModel: AboutModelDictionary;
   methodologies: MethodologiesDictionary;
+  results: ResultsDictionary;
   placeholders: PlaceholdersDictionary;
 }

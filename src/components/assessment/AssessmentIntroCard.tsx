@@ -3,6 +3,7 @@ import { InfoPanel } from "@/components/assessment/InfoPanel";
 import { InfoCard } from "@/components/cards/InfoCard";
 import { BackButton } from "@/components/controls/BackButton";
 import { PrimaryButton } from "@/components/controls/PrimaryButton";
+import { SecondaryButton } from "@/components/controls/SecondaryButton";
 import { ArrowRightIcon } from "@/components/icons/ArrowRightIcon";
 import { routes } from "@/lib/routing/routes";
 import type { AssessmentDictionary } from "@/types/common";
@@ -12,13 +13,17 @@ interface AssessmentIntroCardProps {
   startHref: string;
   primaryCtaLabel?: string;
   helperNote?: string;
+  restartActionLabel?: string;
+  onRestart?: () => void;
 }
 
 export function AssessmentIntroCard({
   content,
   startHref,
   primaryCtaLabel,
-  helperNote
+  helperNote,
+  restartActionLabel,
+  onRestart
 }: AssessmentIntroCardProps) {
   return (
     <InfoCard className="rounded-[40px] border-white/30 bg-card/54 px-6 py-7 shadow-[0_18px_48px_rgba(17,19,24,0.08)] lg:min-h-[36rem] lg:px-12 lg:py-9">
@@ -70,13 +75,23 @@ export function AssessmentIntroCard({
                 {helperNote}
               </p>
             ) : null}
-            <PrimaryButton
-              href={startHref}
-              className="w-full justify-between px-6 py-4 text-base lg:w-[18rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
-              trailingIcon={<ArrowRightIcon className="h-5 w-5" />}
-            >
-              {primaryCtaLabel ?? content.introCard.primaryCta}
-            </PrimaryButton>
+            <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:justify-end">
+              {onRestart && restartActionLabel ? (
+                <SecondaryButton
+                  onClick={onRestart}
+                  className="w-full px-6 py-4 text-base lg:w-auto lg:min-w-[14rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
+                >
+                  {restartActionLabel}
+                </SecondaryButton>
+              ) : null}
+              <PrimaryButton
+                href={startHref}
+                className="w-full justify-between px-6 py-4 text-base lg:w-[18rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
+                trailingIcon={<ArrowRightIcon className="h-5 w-5" />}
+              >
+                {primaryCtaLabel ?? content.introCard.primaryCta}
+              </PrimaryButton>
+            </div>
           </div>
         </div>
       </div>

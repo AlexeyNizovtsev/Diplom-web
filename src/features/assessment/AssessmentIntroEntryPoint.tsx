@@ -2,30 +2,37 @@
 
 import { useEffect, useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import { AssessmentIntroCard } from "@/components/assessment/AssessmentIntroCard";
+import { firstAssessmentBlockId, questionnaireConfig } from "@/config/questionnaire";
 import { buildAssessmentBlockRoute } from "@/lib/routing/routes";
-import { loadAssessmentProgress } from "@/lib/storage/assessmentProgress";
+import {
+  clearAssessmentProgress,
+  loadAssessmentProgress
+} from "@/lib/storage/assessmentProgress";
 import type { AssessmentDictionary } from "@/types/common";
 
 interface AssessmentIntroEntryPointProps {
   content: AssessmentDictionary;
   defaultStartHref: string;
-  questionnaireVersion: string;
 }
 
 export function AssessmentIntroEntryPoint({
   content,
-  defaultStartHref,
-  questionnaireVersion
+  defaultStartHref
 }: AssessmentIntroEntryPointProps) {
+  const router = useRouter();
   const [startHref, setStartHref] = useState(defaultStartHref);
   const [primaryCtaLabel, setPrimaryCtaLabel] = useState(content.introCard.primaryCta);
   const [resumeHint, setResumeHint] = useState<string | undefined>(undefined);
+  const [showRestartAction, setShowRestartAction] = useState(false);
 
   useEffect(() => {
-    const savedProgress = loadAssessmentProgress(questionnaireVersion);
+    const savedProgress = loadAssessmentProgress(questionnaireConfig);
 
     if (!savedProgress) {
+      setShowRestartAction(false);
       return;
     }
 
@@ -34,7 +41,13 @@ export function AssessmentIntroEntryPoint({
     setStartHref(buildAssessmentBlockRoute(savedProgress.currentBlockId));
     setPrimaryCtaLabel(content.introCard.resumeCta);
     setResumeHint(content.introCard.resumeHint.replace("{blockLabel}", savedBlockLabel));
-  }, [content, questionnaireVersion]);
+    setShowRestartAction(true);
+  }, [content]);
+
+  const handleRestart = () => {
+    clearAssessmentProgress();
+    router.push(buildAssessmentBlockRoute(firstAssessmentBlockId));
+  };
 
   return (
     <AssessmentIntroCard
@@ -42,6 +55,8 @@ export function AssessmentIntroEntryPoint({
       startHref={startHref}
       primaryCtaLabel={primaryCtaLabel}
       helperNote={resumeHint}
+      restartActionLabel={showRestartAction ? content.introCard.primaryCta : undefined}
+      onRestart={showRestartAction ? handleRestart : undefined}
     />
   );
 }
