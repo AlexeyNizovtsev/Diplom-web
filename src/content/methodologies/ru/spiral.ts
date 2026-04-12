@@ -25,7 +25,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
         id: "whyItMatters",
         title: "Почему это важно",
         description:
-          "Spiral важна тем, что представляет стратегию, которую не заменяет ни один из других поддерживаемых методов. Waterfall ориентирован на план, Scrum — на короткие timeboxed-циклы, Kanban — на поток, RUP — на дисциплинированные итерации и архитектуру, а Spiral наиболее явно представляет разработку, где структура процесса определяется риском и снижением неопределенности"
+          "Spiral важна тем, что представляет стратегию, которую не заменяет ни один из других поддерживаемых методов. Waterfall ориентирован на план, Scrum — на короткие циклы фиксированной длины, Kanban — на поток, RUP — на дисциплинированные итерации и архитектуру, а Spiral наиболее явно представляет разработку, где структура процесса определяется риском и снижением неопределенности"
       }
     ],
     signalTags: [
@@ -72,7 +72,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
           { id: "objectivesAndAlternatives", title: "Цели и альтернативы", description: "Каждый цикл начинается с прояснения того, чего мы добиваемся и какие варианты существуют. Это не слепое продолжение предыдущего шага, а осознанный выбор направления" },
           { id: "riskAnalysis", title: "Анализ рисков", description: "Центральная деятельность цикла — понять, что может сорвать успех. Это включает технические, операционные, календарные, стоимостные, интеграционные, usability- и safety-риски" },
           { id: "engineeringResponse", title: "Инженерный ответ", description: "Команда выполняет именно ту работу, которая нужна для снижения или понимания выбранных рисков. Это может быть дизайн, прототипирование, архитектурные эксперименты, моделирование или прицельная реализация" },
-          { id: "evaluationAndPlanning", title: "Оценка и планирование следующего цикла", description: "Цикл завершается review и решением. Команда использует полученные данные, чтобы определить, должен ли проект продолжаться, как именно и с каким следующим фокусом" }
+          { id: "evaluationAndPlanning", title: "Оценка и планирование следующего цикла", description: "Цикл завершается обсуждением результатов и решением. Команда использует полученные данные, чтобы определить, должен ли проект продолжаться, как именно и с каким следующим фокусом" }
         ]
       },
       {
@@ -100,7 +100,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
     items: [
       { id: "riskIdentification", text: "Способность явно выявлять и обсуждать риски" },
       { id: "technicalLeadership", text: "Техническое лидерство, достаточное для проектирования исследовательских циклов" },
-      { id: "stakeholderTolerance", text: "Готовность стейкхолдеров принимать раннюю исследовательскую работу, которая может еще не выглядеть как полноценная feature-поставка" },
+      { id: "stakeholderTolerance", text: "Готовность стейкхолдеров принимать раннюю исследовательскую работу, которая может еще не выглядеть как полноценная поставка функциональности" },
       { id: "prototypeWillingness", text: "Готовность прототипировать и экспериментировать до полного обязательства" },
       { id: "decisionDiscipline", text: "Дисциплина в оценке результатов после каждого цикла" },
       { id: "organizationalRedirection", text: "Достаточная зрелость организации, чтобы менять направление на основе фактов" },
@@ -121,7 +121,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
       { id: "prototypeWithoutGoals", text: "Прототипировать без ясных целей обучения" },
       { id: "activityWithoutEvidence", text: "Запускать циклы, которые создают активность, но не создают доказательств для решения" },
       { id: "prematureCommitment", text: "Наращивать обязательства до того, как доминирующие риски действительно поняты" },
-      { id: "useInRoutineProjects", text: "Использовать Spiral в рутинных низко-неопределенных проектах, где такой overhead не оправдан" },
+      { id: "useInRoutineProjects", text: "Использовать Spiral в рутинных низко-неопределенных проектах, где такая дополнительная сложность не оправдана" },
       { id: "openEndedExperimentation", text: "Путать бесконечное исследование с дисциплинированным риск-ориентированным прогрессом" },
       { id: "wrongStakeholders", text: "Не привлекать правильных стейкхолдеров к оценке цикла" },
       { id: "tooManyRisks", text: "Выявлять слишком много рисков и не выделять доминирующие" }
@@ -137,7 +137,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
     title: "Где Spiral подходит лучше всего",
     goodFit: [
       { id: "highTechnicalUncertainty", text: "Техническая неопределенность высока" },
-      { id: "innovationOrRnD", text: "В проекте много инновационной или R&D-составляющей" },
+      { id: "innovationOrRnD", text: "В проекте много инновационной или исследовательской составляющей" },
       { id: "unclearFeasibility", text: "Ранняя архитектура или реализуемость еще не ясны" },
       { id: "riskReductionPriority", text: "Снижение риска важнее немедленного темпа поставки фич" },
       { id: "highLateFailureCost", text: "Цена позднего провала слишком высока" },
@@ -151,7 +151,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
       { id: "weakRiskMaturity", text: "Организация не умеет явно работать с риском" },
       { id: "fixedLightweightFramework", text: "Стейкхолдерам нужен фиксированный легкий фреймворк с простым ритмом" },
       { id: "formalStagedGovernance", text: "Контекст определяется формализованным стадийным управлением, а не исследованием неопределенности" },
-      { id: "unjustifiedOverhead", text: "Аналитический overhead не оправдан профилем риска" }
+      { id: "unjustifiedOverhead", text: "Аналитическая нагрузка не оправдана профилем риска" }
     ],
     callout: {
       id: "practicalNote",
@@ -168,7 +168,7 @@ export const spiralMethodologyContentRu: MethodologyContent = {
       { id: "contractManagement", text: "Формальное контрактное управление в высокорисковых закупочных контекстах" },
       { id: "advancedLifecycleCombinations", text: "Продвинутые комбинации Spiral с другими жизненными циклами" },
       { id: "domainPrototypingMethods", text: "Подробные методы прототипирования по доменам" },
-      { id: "enterpriseGovernanceTailoring", text: "Корпоративное governance-tailoring для программ на базе Spiral" }
+      { id: "enterpriseGovernanceTailoring", text: "Корпоративную адаптацию управленческой модели для программ на базе Spiral" }
     ]
   },
   studyNext: {

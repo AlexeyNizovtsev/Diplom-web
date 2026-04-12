@@ -54,7 +54,7 @@ export const waterfallMethodologyContentRu: MethodologyContent = {
       },
       {
         id: "establishPhaseBoundaries",
-        title: "Задать границы фаз и approvals",
+        title: "Задать границы фаз и правила утверждения",
         description:
           "Определите основные стадии, ожидаемые результаты каждой из них и условия, при которых можно двигаться дальше"
       },
@@ -123,7 +123,7 @@ export const waterfallMethodologyContentRu: MethodologyContent = {
         items: [
           { id: "sequentialProgression", title: "Последовательное продвижение", description: "Поздние фазы опираются на достаточно завершенные результаты более ранних стадий" },
           { id: "changeControl", title: "Контроль изменений", description: "Изменения возможны, но после переноса ранних решений в последующие этапы они становятся существенно дороже" },
-          { id: "stageReviewsAndApprovals", title: "Проверки и approvals по стадиям", description: "Переход между фазами обычно привязан к явным условиям review и согласования" }
+          { id: "stageReviewsAndApprovals", title: "Проверки и утверждения по стадиям", description: "Переход между фазами обычно привязан к явным условиям проверки и согласования" }
         ]
       }
     ]
@@ -135,7 +135,7 @@ export const waterfallMethodologyContentRu: MethodologyContent = {
       { id: "stagePlanningCommitment", text: "Готовность придерживаться поэтапного планирования" },
       { id: "baselineDiscipline", text: "Дисциплина для поддержания утвержденных базовых линий" },
       { id: "crossPhaseCoordination", text: "Координация между аналитиками, архитекторами, разработчиками и тестировщиками" },
-      { id: "stakeholderApprovals", text: "Готовность стейкхолдеров review и утверждать результаты в заданных точках" },
+      { id: "stakeholderApprovals", text: "Готовность стейкхолдеров проверять и утверждать результаты в заданных точках" },
       { id: "documentationDiscipline", text: "Документная дисциплина там, где она поддерживает контроль и трассируемость" },
       { id: "predictabilityPreference", text: "Организационное предпочтение предсказуемости, а не частой адаптации" }
     ],
@@ -171,7 +171,7 @@ export const waterfallMethodologyContentRu: MethodologyContent = {
     goodFit: [
       { id: "stableRequirements", text: "Требования относительно стабильны еще до начала реализации" },
       { id: "upfrontClarification", text: "Проекту полезна сильная предварительная проработка" },
-      { id: "stagePlanningAndReview", text: "Организации нужны поэтапное планирование и review по стадиям" },
+      { id: "stagePlanningAndReview", text: "Организации нужны поэтапное планирование и проверки по стадиям" },
       { id: "predictabilityAndTraceability", text: "Предсказуемость и трассируемость важнее быстрой адаптации" },
       { id: "formalCheckpoints", text: "Формальные точки приемки или поставки действительно значимы" },
       { id: "designBeforeCoding", text: "Систему можно осмысленно спроектировать до большей части кодирования" },
@@ -179,11 +179,11 @@ export const waterfallMethodologyContentRu: MethodologyContent = {
     ],
     weakerFit: [
       { id: "evolvingRequirements", text: "Требования ожидаемо меняются по ходу поставки" },
-      { id: "frequentReprioritization", text: "Проект зависит от быстрого feedback и частой переприоритизации" },
+      { id: "frequentReprioritization", text: "Проект зависит от быстрой обратной связи и частой переприоритизации" },
       { id: "highTechnicalUncertainty", text: "Техническая неопределенность высока, а ранние прототипы критичны" },
       { id: "continuousServiceFlow", text: "Работа больше похожа на непрерывный сервисный поток, чем на поэтапную поставку" },
       { id: "weakBaselineDiscipline", text: "Организация не может удерживать дисциплину вокруг базовых линий" },
-      { id: "iterativeDiscoveryValue", text: "Ценность продукта зависит от итеративного discovery, а не от ранней фиксации" },
+      { id: "iterativeDiscoveryValue", text: "Ценность продукта зависит от итеративного уточнения решения, а не от ранней фиксации" },
       { id: "constantChange", text: "Изменения настолько постоянны, что поздние переделки становятся почти неизбежными" }
     ],
     callout: {
@@ -201,7 +201,7 @@ export const waterfallMethodologyContentRu: MethodologyContent = {
       { id: "vModel", text: "V-Model и другие близкие плановые структуры" },
       { id: "procurementStandards", text: "Формальные закупочные стандарты за пределами базовой жизненной логики" },
       { id: "phaseResourceOptimization", text: "Детальное моделирование и оптимизацию распределения ресурсов по фазам" },
-      { id: "largeScaleComplianceTailoring", text: "Крупномасштабный compliance-tailoring за пределами этой справочной страницы" }
+      { id: "largeScaleComplianceTailoring", text: "Крупномасштабную адаптацию под нормативные требования за пределами этой справочной страницы" }
     ]
   },
   studyNext: {

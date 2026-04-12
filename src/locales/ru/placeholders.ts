@@ -3,7 +3,7 @@ import type { PlaceholdersDictionary } from "@/types/common";
 export const placeholders: PlaceholdersDictionary = {
   assessment: {
     title: "Введение в оценку",
-    description: "Маршрут анкеты будет реализован следующим этапом, но уже подключен к общему shell-приложения",
+    description: "Маршрут анкеты будет реализован следующим этапом, но уже подключен к общему каркасу приложения",
     helper: "Следующий шаг: добавить блоки вопросов, автосохранение и рендеринг конфигурации анкеты"
   },
   methodologies: {
@@ -14,7 +14,7 @@ export const placeholders: PlaceholdersDictionary = {
   aboutModel: {
     title: "О модели",
     description: "Эта страница объяснит область применения, логику модели и ограничения в структурированном виде",
-    helper: "Следующий шаг: превратить концептуальный handoff в набор переиспользуемых секций"
+    helper: "Следующий шаг: превратить концептуальный черновик в набор переиспользуемых секций"
   },
   results: {
     title: "Результаты",
@@ -26,4 +26,3 @@ export const placeholders: PlaceholdersDictionary = {
   returnHome: "Вернуться на главную",
   primaryAction: "Начать оценку"
 };
-

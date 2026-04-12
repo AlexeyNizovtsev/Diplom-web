@@ -15,6 +15,7 @@ import type {
 
 import { computeDimensionSignals } from "@/lib/assessment/computeDimensionSignals";
 import { normalizeAnswers } from "@/lib/assessment/normalizeAnswers";
+import { buildRecommendationInterpretation } from "@/lib/result/buildRecommendationInterpretation";
 import {
   methodologyDimensionTargets,
   rankMethodologies
@@ -278,12 +279,17 @@ export function buildResultObject({
           dimensionAverages
         )
       : undefined;
+  const interpretation = buildRecommendationInterpretation({
+    ranking,
+    dimensions: dimensionResults
+  });
 
   return {
     version: RESULT_SCHEMA_VERSION,
     resultCode,
     createdAt,
     questionnaireVersion: questionnaire.version,
+    answerSnapshot: answers,
     methodologyOrder,
     topMethodologyId: topRanking.methodologyId,
     ranking,
@@ -294,6 +300,7 @@ export function buildResultObject({
       topRecommendationText:
         topRanking.overviewText ?? topRanking.shortRationaleText ?? topRanking.methodologyTitle ?? ""
     },
+    interpretation,
     sensitivityHint: closestAlternative
       ? {
           fitStrength: resolveSensitivityStrength(closestAlternativeScoreGap),

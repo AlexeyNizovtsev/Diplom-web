@@ -13,7 +13,7 @@ export const gost34MethodologyContentRu: MethodologyContent = {
         id: "whatIs",
         title: "Что такое GOST 34",
         description:
-          "GOST 34 — это стандартизованный поэтапный подход к созданию автоматизированных систем, построенный вокруг формальных требований, документированных стадий жизненного цикла, технического задания, проектной документации, ввода в действие и приемки. В рамках проекта он представляет наиболее governance-heavy и регуляторно насыщенный метод из поддерживаемого набора"
+          "GOST 34 — это стандартизованный поэтапный подход к созданию автоматизированных систем, построенный вокруг формальных требований, документированных стадий жизненного цикла, технического задания, проектной документации, ввода в действие и приемки. В рамках проекта это самый формализованный и регуляторно насыщенный метод из поддерживаемого набора"
       },
       {
         id: "coreIdea",
@@ -25,7 +25,7 @@ export const gost34MethodologyContentRu: MethodologyContent = {
         id: "whyItMatters",
         title: "Почему это важно",
         description:
-          "GOST 34 важна тем, что отражает контекст поставки, который остальные методы не покрывают полностью: проекты, где документация, stage approval и формальная приемка — не опциональный overhead, а обязательная часть среды"
+          "GOST 34 важна тем, что отражает контекст поставки, который остальные методы не покрывают полностью: проекты, где документация, поэтапное утверждение и формальная приемка — не дополнительная нагрузка, а обязательная часть среды"
       }
     ],
     signalTags: [
@@ -102,7 +102,7 @@ export const gost34MethodologyContentRu: MethodologyContent = {
     items: [
       { id: "formalRequirementsWork", text: "Способность работать с формальными требованиями и утвержденными базовыми линиями" },
       { id: "documentationDiscipline", text: "Документная дисциплина, достаточная для поэтапного контроля" },
-      { id: "formalStakeholderStructure", text: "Структура стейкхолдеров, поддерживающая формальные review и approvals" },
+      { id: "formalStakeholderStructure", text: "Структура стейкхолдеров, поддерживающая формальные проверки и утверждения" },
       { id: "acceptanceGovernanceReadiness", text: "Готовность рассматривать тестирование и приемку как явные механизмы управления" },
       { id: "participantCoordination", text: "Координация между бизнесом, техническими участниками и организационной стороной" },
       { id: "operationalPreparationCapacity", text: "Способность заранее подготовить эксплуатационную среду и персонал" },
@@ -126,7 +126,7 @@ export const gost34MethodologyContentRu: MethodologyContent = {
       { id: "forceExploratoryWork", text: "Пытаться запихнуть высоковолатильную исследовательскую продуктовую работу в жесткую формальную структуру" },
       { id: "delayOperationalReadiness", text: "Откладывать вопросы эксплуатационной готовности до самого конца" },
       { id: "ceremonialAcceptance", text: "Сводить приемку к церемониальной подписи вместо реального контрольного рубежа" },
-      { id: "ignoreGovernanceContext", text: "Игнорировать то, что метод оправдан регулированием и governance-контекстом, а не личными предпочтениями команды" }
+      { id: "ignoreGovernanceContext", text: "Игнорировать то, что метод оправдан регулированием и управленческим контекстом, а не личными предпочтениями команды" }
     ],
     callout: {
       id: "whyTheseMistakesMatter",
@@ -142,7 +142,7 @@ export const gost34MethodologyContentRu: MethodologyContent = {
       { id: "mandatoryDocumentation", text: "Документация и согласования обязательны, а не опциональны" },
       { id: "formalTechnicalAssignment", text: "Заказчик требует формального ТЗ и поэтапной поставки" },
       { id: "centralAcceptanceProcedures", text: "Процедуры приемки являются центральной частью проекта" },
-      { id: "formalizedEnvironment", text: "Система создается для enterprise-, public-sector-, defense-, industrial- или другой формализованной среды" },
+      { id: "formalizedEnvironment", text: "Система создается для корпоративной, государственной, оборонной, промышленной или другой формализованной среды" },
       { id: "traceabilityOverAdaptation", text: "Трассируемость и подотчетность важнее легкой адаптации" },
       { id: "structuredLifecycleCoordination", text: "Организация способна поддерживать структурированную координацию по стадиям жизненного цикла" }
     ],
@@ -152,14 +152,14 @@ export const gost34MethodologyContentRu: MethodologyContent = {
       { id: "lightweightExperimentation", text: "Команде нужнее легкие эксперименты, чем формальный стадийный контроль" },
       { id: "continuousServiceOrMaintenance", text: "Работа больше похожа на непрерывный сервисный поток или продуктовое сопровождение" },
       { id: "noFormalizationNeed", text: "Среда на самом деле не требует высокой формализации" },
-      { id: "weakDocumentDiscipline", text: "Организация не способна поддерживать дисциплину по документам и approvals" },
-      { id: "innovationDominates", text: "Инновационный риск и discovery доминируют сильнее, чем регулируемое исполнение" }
+      { id: "weakDocumentDiscipline", text: "Организация не способна поддерживать дисциплину по документам и утверждениям" },
+      { id: "innovationDominates", text: "Инновационный риск и исследовательская работа доминируют сильнее, чем регулируемое исполнение" }
     ],
     callout: {
       id: "practicalNote",
       label: "Практическая заметка",
       description:
-        "GOST 34 наиболее сильна тогда, когда формализация внешне оправдана governance-, regulatory- или contract-контекстом. Без этого overhead метода легко начинает перевешивать его пользу"
+        "GOST 34 наиболее сильна тогда, когда формализация внешне оправдана управленческим, нормативным или контрактным контекстом. Без этого дополнительная нагрузка метода легко начинает перевешивать его пользу"
     }
   },
   notCoveredHere: {
@@ -170,7 +170,7 @@ export const gost34MethodologyContentRu: MethodologyContent = {
       { id: "modernAdaptations", text: "Современные организационные адаптации поставки на базе GOST" },
       { id: "adjacentStandardsComparison", text: "Сравнение со всеми смежными стандартами и государственными регламентами" },
       { id: "postSovietStandardsEcosystem", text: "Полную экосистему постсоветских стандартов за пределами базового фокуса на GOST 34" },
-      { id: "tailoringRulesBySystemType", text: "Детальные правила tailoring для каждого типа автоматизированной системы" }
+      { id: "tailoringRulesBySystemType", text: "Детальные правила адаптации для каждого типа автоматизированной системы" }
     ]
   },
   studyNext: {

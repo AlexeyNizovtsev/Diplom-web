@@ -27,7 +27,13 @@ export const assessment: AssessmentDictionary = {
     ],
     primaryCta: "Start assessment",
     resumeCta: "Resume assessment",
-    resumeHint: "Continue from {blockLabel}"
+    resumeHint: "Continue from {blockLabel}",
+    restartModal: {
+      title: "You have an unfinished assessment",
+      description:
+        "Your saved progress is currently at {blockLabel}. Starting again will replace the unfinished assessment.",
+      dismissCta: "Cancel"
+    }
   },
   blockPlaceholder: {
     eyebrow: "Assessment block",
@@ -56,8 +62,25 @@ export const assessment: AssessmentDictionary = {
     actions: {
       back: "Back",
       nextBlock: "Next block",
-      finishAssessment: "Finish assessment",
-      returnToIntro: "Return to intro"
+      reviewAnswers: "Review answers",
+      returnToIntro: "Return to intro",
+      backToReview: "Back to answers",
+      saveAndReturn: "Save and return",
+      confirmAnswers: "Confirm and show result"
+    },
+    review: {
+      eyebrow: "Answer review",
+      title: "Your answers",
+      description:
+        "Check the questionnaire before the recommendation is generated. If needed, open any question, update the answer, and return here.",
+      helper:
+        "The review is intentionally compact: each row shows the question, your current answer, and a quick edit action.",
+      answerLabel: "Answer",
+      editAction: "Edit",
+      loadingLabel: "Loading saved answers",
+      emptyTitle: "No saved answers found",
+      emptyDescription:
+        "Complete the questionnaire first. Once every block is answered, this review screen will appear before the results page."
     },
     blockOrderLabels: {
       governance: "Block 1 of 6",

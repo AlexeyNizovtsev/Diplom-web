@@ -45,7 +45,7 @@ export const howItWorks: HowItWorksDictionary = {
       governanceFormalisation: {
         label: "Измерение 1",
         title: "Формализация управления",
-        description: "Регламент, этапная документация, формальные согласования и давление комплаенса"
+        description: "Регламенты, этапная документация, формальные согласования и нормативные требования"
       },
       requirementsStability: {
         label: "Измерение 2",
@@ -55,7 +55,7 @@ export const howItWorks: HowItWorksDictionary = {
       riskInnovationOrientation: {
         label: "Измерение 3",
         title: "Ориентация на риск и инновации",
-        description: "Техническая неопределенность, критичность и роль экспериментов или R&D"
+        description: "Техническая неопределенность, критичность и роль экспериментов или исследований"
       },
       iterationStructure: {
         label: "Измерение 4",
@@ -93,14 +93,14 @@ export const howItWorks: HowItWorksDictionary = {
       },
       rupFit: {
         title: "Архитектурно сложные системы + дисциплинированные итерации",
-        description: "Поддерживает RUP для структурированной итеративной работы над сложными enterprise-системами"
+        description: "Поддерживает RUP для структурированной итеративной работы над сложными корпоративными системами"
       },
       scrumFit: {
         title: "Структурированные адаптивные циклы",
         description: "Поддерживает Scrum, когда важны командный ритм и таймбокс-циклы обучения"
       },
       kanbanFit: {
-        title: "Непрерывный поток + WIP-ограничения",
+        title: "Непрерывный поток + WIP-лимиты",
         description: "Поддерживает Kanban для изменяющихся приоритетов, сервисной работы и оптимизации потока"
       }
     }

@@ -11,14 +11,24 @@ interface AssessmentBlockPageProps {
   params: Promise<{
     blockId: string;
   }>;
+  searchParams?: Promise<{
+    returnTo?: string | string[];
+  }>;
 }
 
-export default async function AssessmentBlockPage({ params }: AssessmentBlockPageProps) {
+export default async function AssessmentBlockPage({
+  params,
+  searchParams,
+}: AssessmentBlockPageProps) {
   const locale = await getLocale();
   const dictionary = getDictionary(locale);
   const { blockId } = await params;
+  const resolvedSearchParams = await searchParams;
   const typedBlockId = blockId as AssessmentBlockId;
   const hasMatchingBlock = questionnaireConfig.blocks.some((block) => block.id === typedBlockId);
+  const returnToReview =
+    typeof resolvedSearchParams?.returnTo === "string" &&
+    resolvedSearchParams.returnTo === "review";
 
   if (!hasMatchingBlock) {
     notFound();
@@ -30,6 +40,7 @@ export default async function AssessmentBlockPage({ params }: AssessmentBlockPag
       questionnaire={questionnaireConfig}
       content={getQuestionnaireContent(locale)}
       ui={dictionary.assessment.questionnaire}
+      returnToReview={returnToReview}
     />
   );
 }

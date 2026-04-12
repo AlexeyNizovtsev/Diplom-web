@@ -14,6 +14,10 @@ export default async function ResultsPage({ searchParams }: ResultsPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
 
   return (
-    <ResultsPageEntryPoint content={dictionary.results} requestedCode={resolvedSearchParams?.code} />
+    <ResultsPageEntryPoint
+      content={dictionary.results}
+      locale={locale}
+      requestedCode={resolvedSearchParams?.code}
+    />
   );
 }

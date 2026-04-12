@@ -1,4 +1,4 @@
-import { assessment } from "@/locales/ru/assessmentLocalized";
+import { assessment } from "@/locales/ru/assessmentV2";
 import { aboutModel } from "@/locales/ru/aboutModel";
 import { howItWorks } from "@/locales/ru/howItWorks";
 import { home } from "@/locales/ru/home";

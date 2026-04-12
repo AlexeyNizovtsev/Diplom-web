@@ -15,22 +15,15 @@ import { SectionHeading } from "@/components/sections/SectionHeading";
 import { glassPanelSurfaceClasses } from "@/components/surfaces/glassSurface";
 import { assessmentBlockOrder } from "@/config/questionnaire";
 import { useAssessmentState } from "@/hooks/useAssessmentState";
-import { useLocale } from "@/hooks/useLocale";
-import { getDictionary } from "@/lib/i18n/getDictionary";
-import { getMethodologyContentMap } from "@/lib/methodology/getMethodologyContent";
-import { buildResultObject } from "@/lib/result/buildResultObject";
 import {
   buildAssessmentBlockRoute,
-  buildResultsRoute,
+  buildAssessmentReviewRoute,
   routes,
 } from "@/lib/routing/routes";
-import { saveAssessmentResult } from "@/lib/storage/results";
 import { cn } from "@/lib/utils";
-import { normalizeAnswers } from "@/lib/assessment/normalizeAnswers";
 import type { AssessmentDictionary } from "@/types/common";
 import type {
   AssessmentBlockId,
-  DimensionKey,
   LocalizedQuestionnaireContent,
   QuestionnaireConfig,
 } from "@/types/questionnaire";
@@ -40,6 +33,7 @@ interface AssessmentPageViewProps {
   questionnaire: QuestionnaireConfig;
   content: LocalizedQuestionnaireContent;
   ui: AssessmentDictionary["questionnaire"];
+  returnToReview?: boolean;
 }
 
 export function AssessmentPageView({
@@ -47,10 +41,9 @@ export function AssessmentPageView({
   questionnaire,
   content,
   ui,
+  returnToReview = false,
 }: AssessmentPageViewProps) {
   const router = useRouter();
-  const { locale } = useLocale();
-  const dictionary = getDictionary(locale);
   const [showValidationMessage, setShowValidationMessage] = useState(false);
   const currentBlockIndex = assessmentBlockOrder.findIndex(
     (blockId) => blockId === currentBlockId,
@@ -62,7 +55,7 @@ export function AssessmentPageView({
   const questionOffset = questionnaire.blocks
     .slice(0, currentBlockIndex)
     .reduce((count, block) => count + block.questions.length, 0);
-  const { progress, selectedOptionIds, isCurrentBlockComplete, selectAnswer } =
+  const { selectedOptionIds, isCurrentBlockComplete, selectAnswer } =
     useAssessmentState({
       questionnaire,
       currentBlock,
@@ -73,14 +66,23 @@ export function AssessmentPageView({
     .replace("{total}", String(assessmentBlockOrder.length));
 
   const nextActionLabel = nextBlockId
-    ? ui.actions.nextBlock
-    : ui.actions.finishAssessment;
+    ? returnToReview
+      ? ui.actions.saveAndReturn
+      : ui.actions.nextBlock
+    : returnToReview
+      ? ui.actions.saveAndReturn
+      : ui.actions.reviewAnswers;
 
   useEffect(() => {
     setShowValidationMessage(false);
-  }, [currentBlockId, isCurrentBlockComplete]);
+  }, [currentBlockId, isCurrentBlockComplete, returnToReview]);
 
   const handleBack = () => {
+    if (returnToReview) {
+      router.push(buildAssessmentReviewRoute());
+      return;
+    }
+
     if (previousBlockId) {
       router.push(buildAssessmentBlockRoute(previousBlockId));
       return;
@@ -95,39 +97,17 @@ export function AssessmentPageView({
       return;
     }
 
+    if (returnToReview) {
+      router.push(buildAssessmentReviewRoute());
+      return;
+    }
+
     if (nextBlockId) {
       router.push(buildAssessmentBlockRoute(nextBlockId));
       return;
     }
 
-    const normalizedAnswers = normalizeAnswers(questionnaire, progress.answers);
-
-    if (!normalizedAnswers.isComplete) {
-      const firstIncompleteBlockId = normalizedAnswers.missingRequiredBlockIds[0];
-
-      if (firstIncompleteBlockId) {
-        router.push(buildAssessmentBlockRoute(firstIncompleteBlockId));
-        return;
-      }
-
-      setShowValidationMessage(true);
-      return;
-    }
-
-    const dimensionLabels = Object.fromEntries(
-      questionnaire.blocks.map((block) => [block.dimensionKey, content.blocks[block.id].title]),
-    ) as Record<DimensionKey, string>;
-    const result = buildResultObject({
-      questionnaire,
-      answers: progress.answers,
-      locale,
-      resultsDictionary: dictionary.results,
-      methodologyContentMap: getMethodologyContentMap(locale),
-      dimensionLabels,
-    });
-
-    saveAssessmentResult(result);
-    router.push(buildResultsRoute(result.resultCode));
+    router.push(buildAssessmentReviewRoute());
   };
 
   return (
@@ -173,9 +153,11 @@ export function AssessmentPageView({
                   return (
                     <QuestionCard
                       key={question.id}
+                      id={question.id}
                       label={`${ui.questionLabel} ${questionOffset + index + 1}`}
                       title={questionContent.title}
                       helperText={questionContent.helperText}
+                      className="scroll-mt-32"
                     >
                       <div
                         role="radiogroup"
@@ -208,7 +190,7 @@ export function AssessmentPageView({
               </div>
 
               <AssessmentNav
-                backLabel={ui.actions.back}
+                backLabel={returnToReview ? ui.actions.backToReview : ui.actions.back}
                 nextLabel={nextActionLabel}
                 autosaveLabel={ui.autosaveNote}
                 validationMessage={ui.validationMessage}

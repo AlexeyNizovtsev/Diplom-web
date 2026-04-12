@@ -4,7 +4,8 @@ import type { ButtonHTMLAttributes, PropsWithChildren, ReactNode } from "react";
 import { secondaryButtonClasses } from "@/components/controls/buttonStyles";
 import { cn } from "@/lib/utils";
 
-interface SecondaryButtonProps extends PropsWithChildren, ButtonHTMLAttributes<HTMLButtonElement> {
+interface SecondaryButtonProps
+  extends PropsWithChildren, ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
   className?: string;
   trailingIcon?: ReactNode;
@@ -38,9 +39,12 @@ export function SecondaryButton({
   }
 
   return (
-    <button type={type} className={cn(secondaryButtonClasses, className)} {...props}>
+    <button
+      type={type}
+      className={cn(secondaryButtonClasses, className)}
+      {...props}
+    >
       {content}
     </button>
   );
 }
-

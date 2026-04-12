@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { AssessmentIntroCard } from "@/components/assessment/AssessmentIntroCard";
+import { AssessmentRestartDialog } from "@/components/assessment/AssessmentRestartDialog";
 import { firstAssessmentBlockId, questionnaireConfig } from "@/config/questionnaire";
 import { buildAssessmentBlockRoute } from "@/lib/routing/routes";
 import {
@@ -23,40 +24,83 @@ export function AssessmentIntroEntryPoint({
   defaultStartHref
 }: AssessmentIntroEntryPointProps) {
   const router = useRouter();
-  const [startHref, setStartHref] = useState(defaultStartHref);
-  const [primaryCtaLabel, setPrimaryCtaLabel] = useState(content.introCard.primaryCta);
+  const [resumeHref, setResumeHref] = useState<string | undefined>(undefined);
   const [resumeHint, setResumeHint] = useState<string | undefined>(undefined);
-  const [showRestartAction, setShowRestartAction] = useState(false);
+  const [savedBlockLabel, setSavedBlockLabel] = useState<string | undefined>(undefined);
+  const [isRestartDialogOpen, setIsRestartDialogOpen] = useState(false);
 
   useEffect(() => {
     const savedProgress = loadAssessmentProgress(questionnaireConfig);
 
     if (!savedProgress) {
-      setShowRestartAction(false);
+      setResumeHref(undefined);
+      setResumeHint(undefined);
+      setSavedBlockLabel(undefined);
+      setIsRestartDialogOpen(false);
       return;
     }
 
-    const savedBlockLabel = content.questionnaire.blockOrderLabels[savedProgress.currentBlockId];
+    const nextSavedBlockLabel =
+      content.questionnaire.blockOrderLabels[savedProgress.currentBlockId];
 
-    setStartHref(buildAssessmentBlockRoute(savedProgress.currentBlockId));
-    setPrimaryCtaLabel(content.introCard.resumeCta);
-    setResumeHint(content.introCard.resumeHint.replace("{blockLabel}", savedBlockLabel));
-    setShowRestartAction(true);
+    setResumeHref(buildAssessmentBlockRoute(savedProgress.currentBlockId));
+    setSavedBlockLabel(nextSavedBlockLabel);
+    setResumeHint(
+      content.introCard.resumeHint.replace("{blockLabel}", nextSavedBlockLabel)
+    );
   }, [content]);
+
+  const handleStart = () => {
+    if (resumeHref) {
+      setIsRestartDialogOpen(true);
+      return;
+    }
+
+    router.push(defaultStartHref);
+  };
+
+  const handleResume = () => {
+    if (!resumeHref) {
+      return;
+    }
+
+    router.push(resumeHref);
+  };
 
   const handleRestart = () => {
     clearAssessmentProgress();
+    setIsRestartDialogOpen(false);
+    setResumeHref(undefined);
+    setResumeHint(undefined);
+    setSavedBlockLabel(undefined);
     router.push(buildAssessmentBlockRoute(firstAssessmentBlockId));
   };
 
   return (
-    <AssessmentIntroCard
-      content={content}
-      startHref={startHref}
-      primaryCtaLabel={primaryCtaLabel}
-      helperNote={resumeHint}
-      restartActionLabel={showRestartAction ? content.introCard.primaryCta : undefined}
-      onRestart={showRestartAction ? handleRestart : undefined}
-    />
+    <>
+      <AssessmentIntroCard
+        content={content}
+        onStart={handleStart}
+        helperNote={resumeHint}
+        resumeActionLabel={resumeHref ? content.introCard.resumeCta : undefined}
+        onResume={resumeHref ? handleResume : undefined}
+      />
+      {isRestartDialogOpen && savedBlockLabel ? (
+        <AssessmentRestartDialog
+          title={content.introCard.restartModal.title}
+          description={content.introCard.restartModal.description.replace(
+            "{blockLabel}",
+            savedBlockLabel
+          )}
+          primaryCtaLabel={content.introCard.primaryCta}
+          resumeCtaLabel={content.introCard.resumeCta}
+          dismissCtaLabel={content.introCard.restartModal.dismissCta}
+          helperNote={resumeHint}
+          onStartOver={handleRestart}
+          onResume={handleResume}
+          onDismiss={() => setIsRestartDialogOpen(false)}
+        />
+      ) : null}
+    </>
   );
 }

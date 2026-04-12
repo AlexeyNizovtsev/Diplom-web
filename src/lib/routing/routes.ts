@@ -4,6 +4,7 @@ export const routes = {
   home: "/",
   assessment: "/assessment",
   assessmentBlocks: "/assessment/block",
+  assessmentReview: "/assessment/review",
   howItWorks: "/how-it-works",
   methodologies: "/methodologies",
   aboutModel: "/about-model",
@@ -12,6 +13,14 @@ export const routes = {
 
 export function buildAssessmentBlockRoute(blockId: string) {
   return `${routes.assessmentBlocks}/${encodeURIComponent(blockId)}`;
+}
+
+export function buildAssessmentQuestionEditRoute(blockId: string, questionId: string) {
+  return `${buildAssessmentBlockRoute(blockId)}?returnTo=review#${encodeURIComponent(questionId)}`;
+}
+
+export function buildAssessmentReviewRoute() {
+  return routes.assessmentReview;
 }
 
 export function buildMethodologyRoute(methodologyId: MethodologyId) {

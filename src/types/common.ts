@@ -3,7 +3,13 @@ import type {
   MethodologyPreviewContent,
   MethodologySectionId
 } from "@/types/methodology";
-import type { FitTier, ResultReasonId, SensitivityStrength } from "@/types/result";
+import type {
+  FitTier,
+  RecommendationInterpretationLabel,
+  RecommendationMode,
+  ResultReasonId,
+  SensitivityStrength
+} from "@/types/result";
 import type { AssessmentBlockId } from "@/types/questionnaire";
 
 export type Locale = "en" | "ru";
@@ -120,6 +126,11 @@ export interface AssessmentDictionary {
     primaryCta: string;
     resumeCta: string;
     resumeHint: string;
+    restartModal: {
+      title: string;
+      description: string;
+      dismissCta: string;
+    };
   };
   blockPlaceholder: {
     eyebrow: string;
@@ -142,8 +153,22 @@ export interface AssessmentDictionary {
     actions: {
       back: string;
       nextBlock: string;
-      finishAssessment: string;
+      reviewAnswers: string;
       returnToIntro: string;
+      backToReview: string;
+      saveAndReturn: string;
+      confirmAnswers: string;
+    };
+    review: {
+      eyebrow: string;
+      title: string;
+      description: string;
+      helper: string;
+      answerLabel: string;
+      editAction: string;
+      loadingLabel: string;
+      emptyTitle: string;
+      emptyDescription: string;
     };
     blockOrderLabels: Record<AssessmentBlockId, string>;
   };
@@ -238,10 +263,13 @@ export interface ResultsDictionary {
   rankedList: {
     title: string;
     description: string;
+    jumpLabel: string;
   };
   fitLabels: Record<FitTier, string>;
   fitStrengthLabels: Record<SensitivityStrength, string>;
   bestFit: {
+    sectionTitle: string;
+    sectionDescription: string;
     badge: string;
     keySignalsLabel: string;
     dimensionsLabel: string;
@@ -256,15 +284,20 @@ export interface ResultsDictionary {
     title: string;
     description: string;
     topDimensionsLabel: string;
+    expandActionLabel: string;
+    collapseActionLabel: string;
   };
   topActions: {
     download: string;
+    viewAnswers: string;
     copyLink: string;
     copiedLink: string;
     retakeAssessment: string;
     pdfAction: string;
     jsonAction: string;
     placeholderNote: string;
+    copySuccessMessage: string;
+    resetConfirmation: string;
   };
   emptyState: {
     title: string;
@@ -279,6 +312,21 @@ export interface ResultsDictionary {
     resultCodeLabel: string;
     exportLabel: string;
   };
+  interpretation: {
+    eyebrow: string;
+    summaryLabel: string;
+    primaryReasonLabel: string;
+    secondaryReasonLabel: string;
+    supportNoteLabel: string;
+    modeHeadings: Record<RecommendationMode, string>;
+    modeSummaries: Record<RecommendationMode, string>;
+    primaryTemplates: Record<RecommendationMode, string>;
+    secondaryTemplates: Record<RecommendationMode, string>;
+    supportFlagTemplates: {
+      architecture_supporting_option: string;
+    };
+    methodologyLabels: Record<RecommendationInterpretationLabel, string>;
+  };
   narrative: {
     fitLabelKeyPrefix: string;
     shortRationaleTemplate: string;
@@ -289,6 +337,10 @@ export interface ResultsDictionary {
     sensitivityTemplate: string;
     reasonPhrases: Record<ResultReasonId, string>;
     outcomeTexts: Record<MethodologyId, string>;
+    outcomeCautionTexts: Record<MethodologyId, string>;
+    nextStepTexts: Record<MethodologyId, string>;
+    supportRoleTexts: Partial<Record<MethodologyId, string>>;
+    outcomeContrastTexts: Partial<Record<MethodologyId, string>>;
   };
   dimensions: Record<
     string,

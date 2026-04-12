@@ -30,7 +30,7 @@ export const rupMethodologyContentRu: MethodologyContent = {
     ],
     signalTags: [
       { id: "disciplinedIterations", label: "Дисциплинированные итерации" },
-      { id: "architectureFirstThinking", label: "Architecture-first мышление" },
+      { id: "architectureFirstThinking", label: "Архитектура в приоритете" },
       { id: "managedRequirements", label: "Управляемые требования" },
       { id: "controlledChange", label: "Контролируемые изменения" }
     ]
@@ -43,13 +43,13 @@ export const rupMethodologyContentRu: MethodologyContent = {
   firstSteps: {
     title: "С чего начать применение RUP",
     intro:
-      "Сначала стабилизируйте объем, архитектурное направление и дисциплину управления изменениями, а уже потом масштабируйте feature-delivery",
+      "Сначала стабилизируйте объем, архитектурное направление и дисциплину управления изменениями, а уже потом масштабируйте поставку функциональности",
     mode: "sequence",
     steps: [
       { id: "defineScopeAndRisks", title: "Определить объем проекта и ключевые риски", description: "Уточните бизнес-цели, основные ограничения и главные технические или организационные риски. Не начинайте с детального полномасштабного исполнения — сначала поймите, что должно быть стабилизировано" },
       { id: "establishArchitectureDirection", title: "Задать основное архитектурное направление", description: "Рано определите архитектурный каркас системы: ключевые компоненты, границы интеграции и технические решения, которые будут формировать последующие итерации" },
       { id: "organizeFirstPhasePlan", title: "Организовать план первой фазы", description: "Структурируйте работу вокруг фаз RUP и коротких внутренних итераций. Команда должна явно понимать, что именно она проверяет в раннем цикле: реализуемость, понимание требований, устойчивость архитектуры" },
-      { id: "setRequirementsAndChangeManagement", title: "Настроить управление требованиями и изменениями", description: "Определите, как требования будут собираться, уточняться, трассироваться и меняться. RUP зависит от дисциплинированной работы с требованиями, а не от неформального дрейфа backlog" },
+      { id: "setRequirementsAndChangeManagement", title: "Настроить управление требованиями и изменениями", description: "Определите, как требования будут собираться, уточняться, трассироваться и меняться. RUP зависит от дисциплинированной работы с требованиями, а не от неформального дрейфа списка задач" },
       { id: "defineArtifactsAndResponsibilities", title: "Определить основные артефакты и ответственности", description: "Выберите минимально полезный набор артефактов, моделей и ролей для проекта. Не пытайтесь применять весь возможный набор RUP-артефактов, но обязательно зафиксируйте ответственности" },
       { id: "iterateWithValidation", title: "Итерировать ради проверенного прогресса, а не ради активности", description: "Запускайте итерации, которые дают проверенный результат: уточненные требования, исполнимую архитектуру, протестированную функциональность и управляемые решения. Итерации должны снижать неопределенность, а не просто занимать время", emphasis: "final" }
     ],
@@ -69,8 +69,8 @@ export const rupMethodologyContentRu: MethodologyContent = {
         id: "phases",
         label: "Фазы",
         items: [
-          { id: "inception", title: "Inception", description: "Проясняет цели проекта, объем, business case, основные риски и общее направление. Это не полное проектирование, а ранняя рамка и проверка реализуемости" },
-          { id: "elaboration", title: "Elaboration", description: "Стабилизирует архитектуру и снижает самые важные риски. Эта фаза критична, потому что определяет, готов ли проект к полномасштабному construction" },
+          { id: "inception", title: "Inception", description: "Проясняет цели проекта, объем, бизнес-обоснование, основные риски и общее направление. Это не полное проектирование, а ранняя рамка и проверка реализуемости" },
+          { id: "elaboration", title: "Elaboration", description: "Стабилизирует архитектуру и снижает самые важные риски. Эта фаза критична, потому что определяет, готов ли проект к полномасштабной реализации" },
           { id: "construction", title: "Construction", description: "Строит систему через итеративную реализацию и валидацию. Фокус смещается к поставке работающей функциональности поверх уже заданной архитектурной базы" },
           { id: "transition", title: "Transition", description: "Переводит систему к реальному использованию через внедрение, исправления, готовность пользователей и стабилизацию релиза" }
         ]
@@ -79,9 +79,9 @@ export const rupMethodologyContentRu: MethodologyContent = {
         id: "iterations",
         label: "Итерации",
         items: [
-          { id: "iterativeDevelopment", title: "Итеративная разработка", description: "RUP — это не линейное исполнение с несколькими checkpoints. Каждая фаза может содержать итерации, и каждая итерация должна давать конкретный reviewable-progress" },
+          { id: "iterativeDevelopment", title: "Итеративная разработка", description: "RUP — это не линейное исполнение с несколькими контрольными точками. Каждая фаза может содержать итерации, и каждая итерация должна давать конкретный проверяемый результат" },
           { id: "riskReductionThroughIterations", title: "Снижение риска через итерации", description: "Итерации нужны, чтобы работать с неопределенностью рано, а не откладывать сложные вопросы на поздние стадии поставки" },
-          { id: "controlledLearning", title: "Управляемое обучение", description: "Итерации помогают уточнять понимание, но в рамках управляемого процесса, а не через ad hoc-импровизацию" }
+          { id: "controlledLearning", title: "Управляемое обучение", description: "Итерации помогают уточнять понимание, но в рамках управляемого процесса, а не через импровизацию по ситуации" }
         ]
       },
       {
@@ -149,7 +149,7 @@ export const rupMethodologyContentRu: MethodologyContent = {
     title: "Где RUP подходит лучше всего",
     goodFit: [
       { id: "architectureHeavy", text: "Система архитектурно сложна или насыщена интеграциями" },
-      { id: "iterativeWithGovernance", text: "Проекту нужна итеративная поставка, но с более сильным governance, чем дают легкие agile-frameworks" },
+      { id: "iterativeWithGovernance", text: "Проекту нужна итеративная поставка, но с более сильным управлением, чем дают легкие agile-подходы" },
       { id: "managedChangingRequirements", text: "Требования не полностью стабильны, но их все равно нужно аккуратно управлять" },
       { id: "reduceTechnicalRiskEarly", text: "Технические риски нужно снижать до полномасштабного construction" },
       { id: "commonProcessLanguage", text: "Нескольким ролям или командам нужен общий язык процесса" },
@@ -169,7 +169,7 @@ export const rupMethodologyContentRu: MethodologyContent = {
       id: "practicalNote",
       label: "Практическая заметка",
       description:
-        "RUP особенно сильна в промежуточной зоне между строгим стадийным governance и легким agile-flow. Она хороша там, где нужна итеративная разработка, но одновременно важны архитектура, контролируемые изменения и процессная дисциплина"
+        "RUP особенно сильна в промежуточной зоне между строгим стадийным управлением и легким agile-потоком. Она хороша там, где нужна итеративная разработка, но одновременно важны архитектура, контролируемые изменения и процессная дисциплина"
     }
   },
   notCoveredHere: {
@@ -177,10 +177,10 @@ export const rupMethodologyContentRu: MethodologyContent = {
     items: [
       { id: "unifiedProcessHistory", text: "Полную историю и эволюцию семейства Unified Process" },
       { id: "umlModelingPractice", text: "Подробную UML-практику" },
-      { id: "fullArtifactCatalog", text: "Полный каталог артефактов и варианты tailoring" },
+      { id: "fullArtifactCatalog", text: "Полный каталог артефактов и варианты адаптации" },
       { id: "enterpriseCustomization", text: "Корпоративную адаптацию процесса в крупном масштабе" },
       { id: "toolSpecificImplementations", text: "Tool-specific реализации RUP" },
-      { id: "variantComparison", text: "Формальное сравнение вариантов RUP и более поздних process descendants" }
+      { id: "variantComparison", text: "Формальное сравнение вариантов RUP и более поздних производных процессов" }
     ]
   },
   studyNext: {
@@ -190,7 +190,7 @@ export const rupMethodologyContentRu: MethodologyContent = {
       { id: "architectureCentricProjects", text: "Изучить architecture-centric development в итеративных проектах" },
       { id: "traceabilityAndChange", text: "Понять трассируемость требований и управляемое change management" },
       { id: "artifactTailoring", text: "Посмотреть, как RUP адаптирует артефакты под размер и риск проекта" },
-      { id: "compareWithWaterfall", text: "Сравнить RUP и Waterfall для контекстов структурированного governance" },
+      { id: "compareWithWaterfall", text: "Сравнить RUP и Waterfall для контекстов структурированного управления" },
       { id: "compareWithScrum", text: "Сравнить RUP и Scrum для дисциплинированной итеративной поставки" }
     ]
   }
