@@ -164,12 +164,6 @@ export function AssessmentReviewPageView({
               "border-[#e7d1bf]/70 bg-[#f4eee8]/78",
             )}
           >
-            <div className="border-b border-[#ead8c9]/80 px-5 py-5 lg:px-8">
-              <p className="max-w-4xl text-[0.98rem] leading-7 text-[#6a6e75] lg:text-[1.05rem]">
-                {ui.review.helper}
-              </p>
-            </div>
-
             <div className="space-y-4 px-5 py-6 lg:px-8 lg:py-8">
               {reviewBlocks.length > 0 ? (
                 <AssessmentAnswersSummary

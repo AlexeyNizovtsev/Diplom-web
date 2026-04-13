@@ -53,7 +53,12 @@ export const results: ResultsDictionary = {
     retakeAssessment: "Retake assessment",
     pdfAction: "Download PDF",
     jsonAction: "Download JSON",
-    placeholderNote: "PDF and JSON export are placeholders in this pass.",
+    preparingPdfAction: "Preparing PDF...",
+    preparingJsonAction: "Preparing JSON...",
+    placeholderNote:
+      "PDF is generated from the current result view. JSON includes the structured result object and the answer summary.",
+    exportFailedMessage:
+      "The export could not be generated. Try again with the current result still open.",
     copySuccessMessage: "Copied successfully.",
     resetConfirmation:
       "Start the assessment again? Your current results will be lost if you do not save them first.",
@@ -69,9 +74,19 @@ export const results: ResultsDictionary = {
   saveSection: {
     title: "Save this result",
     description:
-      "Keep the result code for local restore later or use the export actions once file export is enabled.",
+      "Keep the result code for local restore later, or download the current result as a file.",
     resultCodeLabel: "Result code",
     exportLabel: "Save as",
+  },
+  export: {
+    createdAtLabel: "Created at",
+    exportedAtLabel: "Exported at",
+    questionnaireVersionLabel: "Questionnaire version",
+    localeLabel: "Locale",
+    methodologyDetailsLabel: "Methodology details",
+    answersSectionTitle: "Assessment answers",
+    answersSectionDescription:
+      "These are the concise answers that produced the recommendation shown above.",
   },
   interpretation: {
     eyebrow: "Recommendation interpretation",
@@ -94,23 +109,33 @@ export const results: ResultsDictionary = {
     },
     primaryTemplates: {
       single_fit:
-        "{topMethodology} is the clearest primary fit because it matches the dominant project pattern more directly than the rest of the shortlist.",
+        "{topMethodology} is the clearest primary fit because it most directly matches the dominant {topRole} role in this project profile.",
       composite_strategy:
-        "{topMethodology} ranks first because it matches the dominant governance and formalisation constraints most directly.",
+        "{topMethodology} ranks first because it covers the dominant {topRole} role that shapes the project most strongly.",
       close_fit:
         "{topMethodology} stays first because it aligns slightly more directly with the current signal mix and priorities.",
     },
     secondaryTemplates: {
       single_fit:
-        "{secondMethodology} remains a relevant alternative, but it does not represent a separate critical process role in this case.",
+        "{secondMethodology} remains a relevant alternative, but its {secondRole} emphasis is not strong enough to change the primary reading of the result.",
       composite_strategy:
-        "{secondMethodology} remains strategically important because the project also needs explicit risk-driven execution and uncertainty reduction.",
+        "{secondMethodology} still matters because the project also shows a strongly active {secondRole} role that needs an explicit complementary strategy.",
       close_fit:
-        "{secondMethodology} stays close and may become preferable if secondary priorities shift, but it is not being presented as a combined-method recommendation.",
+        "{secondMethodology} stays close because it emphasizes {secondRole}, so it remains a near alternative rather than a composite recommendation.",
     },
     supportFlagTemplates: {
       architecture_supporting_option:
         "{methodology} remains relevant as an architecture-supporting option because complexity, discipline, and iteration structure are all elevated.",
+      risk_supporting_option:
+        "{methodology} remains relevant as a risk-supporting option because uncertainty and technical risk still require explicit process attention.",
+    },
+    roleLabels: {
+      governance: "governance and formal control",
+      sequential_delivery: "sequential delivery",
+      risk_driven: "risk-driven execution",
+      architecture_control: "architecture and integration control",
+      adaptive_iterations: "adaptive iterations",
+      flow_control: "flow control",
     },
     methodologyLabels: {
       primary_recommendation: "Primary recommendation",
@@ -119,6 +144,7 @@ export const results: ResultsDictionary = {
       best_current_fit: "Best current fit",
       close_alternative: "Close alternative",
       architecture_supporting_option: "Architecture-supporting option",
+      risk_supporting_option: "Risk-supporting option",
     },
   },
   narrative: {

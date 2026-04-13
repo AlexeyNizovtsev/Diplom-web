@@ -81,7 +81,7 @@ function getMethodologyInterpretationLabels(
   content: ResultsDictionary,
 ) {
   return getMethodologyInterpretationIds(methodologyId, interpretation).map(
-    (label) => content.interpretation.methodologyLabels[label],
+    (label) => content.interpretation.methodologyLabels[label] ?? label,
   );
 }
 
@@ -113,6 +113,8 @@ function buildInterpretationPresentation(
   const architectureSupportMethodology = result.ranking
     .slice(0, 3)
     .find((item) => item.methodologyId === "rup");
+  const architectureSupportTemplate =
+    content.interpretation.supportFlagTemplates.architecture_supporting_option;
 
   return {
     interpretation,
@@ -137,10 +139,10 @@ function buildInterpretationPresentation(
       : undefined,
     supportNote:
       interpretation.supportFlags.includes("architecture_supporting_option") &&
+      Boolean(architectureSupportTemplate) &&
       architectureSupportMethodology
         ? replaceTemplate(
-            content.interpretation.supportFlagTemplates
-              .architecture_supporting_option,
+            architectureSupportTemplate!,
             {
               methodology:
                 architectureSupportMethodology.methodologyTitle ??

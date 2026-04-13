@@ -22,19 +22,11 @@ export function ResultsPlaceholderPageView({
   primaryActionLabel,
   returnHomeLabel,
   metadataLabel,
-  metadataValue
+  metadataValue,
 }: ResultsPlaceholderPageViewProps) {
   return (
     <div className="relative overflow-hidden pb-10 pt-12 lg:pb-20 lg:pt-16">
       <HomeBackground />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute right-[-7rem] top-[-5rem] z-[1] h-[28rem] w-[28rem] rounded-full bg-[radial-gradient(circle,_rgba(244,122,18,0.18)_0%,_rgba(244,122,18,0)_70%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-[-10rem] top-[20%] z-[1] h-[30rem] w-[30rem] rounded-full bg-[radial-gradient(circle,_rgba(255,255,255,0.88)_0%,_rgba(255,255,255,0)_72%)]"
-      />
 
       <PageContainer className="relative z-10 py-0">
         <section className="space-y-10 lg:space-y-12">
@@ -57,7 +49,7 @@ export function ResultsPlaceholderPageView({
                   className={cn(
                     "rounded-[1.6rem] px-5 py-5 lg:px-6",
                     glassFieldSurfaceClasses,
-                    "border-border/16 bg-card/82"
+                    "border-border/16 bg-card/82",
                   )}
                 >
                   <p className="text-xs font-bold uppercase tracking-[0.24em] text-accent">

@@ -172,9 +172,13 @@ export function TopActionBar({
   isAnswersOpen,
   isDownloadMenuOpen,
   isCopied,
+  isExportingPdf,
+  isExportingJson,
   onToggleAnswers,
   onToggleDownloadMenu,
   onCopyCode,
+  onDownloadPdf,
+  onDownloadJson,
   onRetakeAssessment,
 }: {
   content: ResultsDictionary;
@@ -182,11 +186,17 @@ export function TopActionBar({
   isAnswersOpen: boolean;
   isDownloadMenuOpen: boolean;
   isCopied: boolean;
+  isExportingPdf: boolean;
+  isExportingJson: boolean;
   onToggleAnswers: () => void;
   onToggleDownloadMenu: () => void;
   onCopyCode: () => void;
+  onDownloadPdf: () => void;
+  onDownloadJson: () => void;
   onRetakeAssessment: () => void;
 }) {
+  const isExporting = isExportingPdf || isExportingJson;
+
   return (
     <div className="flex justify-end">
       <div className="relative flex flex-wrap items-center justify-end gap-3">
@@ -214,11 +224,25 @@ export function TopActionBar({
           {isDownloadMenuOpen ? (
             <div className="absolute right-0 top-[calc(100%+0.75rem)] z-20 w-[18rem] rounded-[1.6rem] border border-border/80 bg-white/95 p-3 shadow-[0_18px_48px_rgba(17,19,24,0.08)] backdrop-blur">
               <div className="space-y-2">
-                <SecondaryButton className="w-full justify-start opacity-70" disabled>
-                  {content.topActions.pdfAction}
+                <SecondaryButton
+                  type="button"
+                  className="w-full justify-start"
+                  disabled={isExporting}
+                  onClick={onDownloadPdf}
+                >
+                  {isExportingPdf
+                    ? content.topActions.preparingPdfAction
+                    : content.topActions.pdfAction}
                 </SecondaryButton>
-                <SecondaryButton className="w-full justify-start opacity-70" disabled>
-                  {content.topActions.jsonAction}
+                <SecondaryButton
+                  type="button"
+                  className="w-full justify-start"
+                  disabled={isExporting}
+                  onClick={onDownloadJson}
+                >
+                  {isExportingJson
+                    ? content.topActions.preparingJsonAction
+                    : content.topActions.jsonAction}
                 </SecondaryButton>
                 <p className="px-2 pt-1 text-sm leading-6 text-text-secondary">
                   {content.topActions.placeholderNote}
@@ -385,15 +409,19 @@ export function InterpretationSummarySection({
             ) : null}
           </div>
 
-          {presentation.supportNote ? (
+          {presentation.supportNotes.length > 0 ? (
             <div className="rounded-[1.5rem] border border-[#e7ddd2] bg-[#f4efe8] px-5 py-4">
               <div className="space-y-2">
                 <p className={resultsCardLabelClass}>
                   {content.interpretation.supportNoteLabel}
                 </p>
-                <p className="text-sm leading-6 text-[#5f6670]">
-                  {presentation.supportNote}
-                </p>
+                <div className="space-y-2">
+                  {presentation.supportNotes.map((note) => (
+                    <p key={note} className="text-sm leading-6 text-[#5f6670]">
+                      {note}
+                    </p>
+                  ))}
+                </div>
               </div>
             </div>
           ) : null}
@@ -722,13 +750,23 @@ export function SaveResultsSection({
   content,
   resultCode,
   isCopied,
+  isExportingPdf,
+  isExportingJson,
   onCopyCode,
+  onDownloadPdf,
+  onDownloadJson,
 }: {
   content: ResultsDictionary;
   resultCode: string;
   isCopied: boolean;
+  isExportingPdf: boolean;
+  isExportingJson: boolean;
   onCopyCode: () => void;
+  onDownloadPdf: () => void;
+  onDownloadJson: () => void;
 }) {
+  const isExporting = isExportingPdf || isExportingJson;
+
   return (
     <section>
       <InfoCard className="border-border/70 bg-white/88">
@@ -740,7 +778,7 @@ export function SaveResultsSection({
             </p>
           </div>
 
-          <div className="flex gap-6">
+          <div className="flex flex-col gap-6 lg:flex-row">
             <div className="flex-1 rounded-[1.8rem] border border-[#ead9cc] bg-[#fbfaf7] px-5 py-5">
               <div className="space-y-3">
                 <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#7a8088]">
@@ -763,11 +801,23 @@ export function SaveResultsSection({
                   {content.saveSection.exportLabel}
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <SecondaryButton className="opacity-70" disabled>
-                    {content.topActions.pdfAction}
+                  <SecondaryButton
+                    type="button"
+                    disabled={isExporting}
+                    onClick={onDownloadPdf}
+                  >
+                    {isExportingPdf
+                      ? content.topActions.preparingPdfAction
+                      : content.topActions.pdfAction}
                   </SecondaryButton>
-                  <SecondaryButton className="opacity-70" disabled>
-                    {content.topActions.jsonAction}
+                  <SecondaryButton
+                    type="button"
+                    disabled={isExporting}
+                    onClick={onDownloadJson}
+                  >
+                    {isExportingJson
+                      ? content.topActions.preparingJsonAction
+                      : content.topActions.jsonAction}
                   </SecondaryButton>
                 </div>
                 <p className="text-sm leading-6 text-text-secondary">

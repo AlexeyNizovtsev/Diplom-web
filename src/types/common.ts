@@ -5,6 +5,7 @@ import type {
 } from "@/types/methodology";
 import type {
   FitTier,
+  MethodologyRole,
   RecommendationInterpretationLabel,
   RecommendationMode,
   ResultReasonId,
@@ -295,7 +296,10 @@ export interface ResultsDictionary {
     retakeAssessment: string;
     pdfAction: string;
     jsonAction: string;
+    preparingPdfAction: string;
+    preparingJsonAction: string;
     placeholderNote: string;
+    exportFailedMessage: string;
     copySuccessMessage: string;
     resetConfirmation: string;
   };
@@ -312,6 +316,15 @@ export interface ResultsDictionary {
     resultCodeLabel: string;
     exportLabel: string;
   };
+  export: {
+    createdAtLabel: string;
+    exportedAtLabel: string;
+    questionnaireVersionLabel: string;
+    localeLabel: string;
+    methodologyDetailsLabel: string;
+    answersSectionTitle: string;
+    answersSectionDescription: string;
+  };
   interpretation: {
     eyebrow: string;
     summaryLabel: string;
@@ -322,10 +335,13 @@ export interface ResultsDictionary {
     modeSummaries: Record<RecommendationMode, string>;
     primaryTemplates: Record<RecommendationMode, string>;
     secondaryTemplates: Record<RecommendationMode, string>;
-    supportFlagTemplates: {
-      architecture_supporting_option: string;
-    };
-    methodologyLabels: Record<RecommendationInterpretationLabel, string>;
+    supportFlagTemplates: Partial<
+      Record<"architecture_supporting_option" | "risk_supporting_option", string>
+    >;
+    roleLabels?: Partial<Record<MethodologyRole, string>>;
+    methodologyLabels: Partial<
+      Record<RecommendationInterpretationLabel, string>
+    >;
   };
   narrative: {
     fitLabelKeyPrefix: string;

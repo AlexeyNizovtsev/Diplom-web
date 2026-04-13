@@ -28,7 +28,13 @@ function addMethodologyLabel(
 export function buildRecommendationInterpretation(
   result: Pick<AssessmentResult, "dimensions" | "ranking">
 ): RecommendationInterpretation {
-  const { mode, supportFlags } = detectRecommendationMode(
+  const {
+    activeRoles,
+    mode,
+    secondMethodologyRole,
+    supportFlags,
+    topMethodologyRole
+  } = detectRecommendationMode(
     result.dimensions,
     result.ranking
   );
@@ -38,6 +44,9 @@ export function buildRecommendationInterpretation(
   const architectureSupportMethodologyId = result.ranking
     .slice(0, 3)
     .find((item) => item.methodologyId === "rup")?.methodologyId;
+  const riskSupportMethodologyId = result.ranking
+    .slice(0, 3)
+    .find((item) => item.methodologyId === "spiral")?.methodologyId;
 
   if (mode === "composite_strategy") {
     addMethodologyLabel(
@@ -65,8 +74,19 @@ export function buildRecommendationInterpretation(
     );
   }
 
+  if (supportFlags.includes("risk_supporting_option")) {
+    addMethodologyLabel(
+      methodologyLabels,
+      riskSupportMethodologyId,
+      "risk_supporting_option"
+    );
+  }
+
   return {
+    activeRoles,
     mode,
+    topMethodologyRole,
+    secondMethodologyRole,
     supportFlags,
     methodologyLabels
   };

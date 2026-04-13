@@ -12,7 +12,25 @@ export type RecommendationMode =
   | "composite_strategy"
   | "close_fit";
 
-export type RecommendationSupportFlag = "architecture_supporting_option";
+export type MethodologyRole =
+  | "governance"
+  | "sequential_delivery"
+  | "risk_driven"
+  | "architecture_control"
+  | "adaptive_iterations"
+  | "flow_control";
+
+export type ActiveRole = MethodologyRole;
+
+export type RoleFamily =
+  | "formal_control"
+  | "risk_architecture"
+  | "iterative_delivery"
+  | "flow_delivery";
+
+export type RecommendationSupportFlag =
+  | "architecture_supporting_option"
+  | "risk_supporting_option";
 
 export type RecommendationInterpretationLabel =
   | "primary_recommendation"
@@ -20,7 +38,8 @@ export type RecommendationInterpretationLabel =
   | "critical_complementary_strategy"
   | "best_current_fit"
   | "close_alternative"
-  | "architecture_supporting_option";
+  | "architecture_supporting_option"
+  | "risk_supporting_option";
 
 export type ResultReasonId =
   | "strictGovernance"
@@ -116,7 +135,10 @@ export interface ResultMetadata {
 }
 
 export interface RecommendationInterpretation {
+  activeRoles: ActiveRole[];
   mode: RecommendationMode;
+  topMethodologyRole?: MethodologyRole;
+  secondMethodologyRole?: MethodologyRole;
   supportFlags: RecommendationSupportFlag[];
   methodologyLabels: Partial<
     Record<MethodologyId, RecommendationInterpretationLabel[]>
@@ -137,4 +159,104 @@ export interface AssessmentResult {
   sensitivityHint?: SensitivityHint;
   interpretation?: RecommendationInterpretation;
   metadata?: ResultMetadata;
+}
+
+export interface ResultExportMetadataItem {
+  id: string;
+  label: string;
+  value: string;
+}
+
+export interface ResultExportDimensionItem {
+  dimensionKey: DimensionKey;
+  label: string;
+  level: DimensionLevel;
+  summary?: string;
+}
+
+export interface ResultExportRankingItem {
+  rank: number;
+  methodologyId: MethodologyId;
+  title: string;
+  fitTier: FitTier;
+  fitLabel: string;
+  interpretationLabels: string[];
+  rationale?: string;
+}
+
+export interface ResultExportMethodologyCard {
+  methodologyId: MethodologyId;
+  title: string;
+  fitTier: FitTier;
+  badgeLabel: string;
+  fitLabel: string;
+  interpretationLabels: string[];
+  signalTags: string[];
+  summary?: string;
+  description?: string;
+  supportingText?: string;
+  dimensionsTitle?: string;
+  dimensions: ResultExportDimensionItem[];
+  outcomeLabel?: string;
+  outcomeText?: string;
+  routeLabel?: string;
+  routeHref?: string;
+}
+
+export interface ResultExportAnswerItem {
+  questionId: string;
+  questionTitle: string;
+  answerLabel: string;
+}
+
+export interface ResultExportAnswerBlock {
+  id: string;
+  label: string;
+  title: string;
+  questions: ResultExportAnswerItem[];
+}
+
+export interface ResultExportDocument {
+  title: string;
+  description: string;
+  metadata: ResultExportMetadataItem[];
+  interpretation: {
+    title: string;
+    heading: string;
+    summaryLabel: string;
+    summary: string;
+    primaryReasonLabel: string;
+    primaryExplanation: string;
+    secondaryReasonLabel: string;
+    secondaryExplanation?: string;
+    supportNoteLabel: string;
+    supportNotes: string[];
+  };
+  rankingSection: {
+    title: string;
+    description: string;
+    items: ResultExportRankingItem[];
+  };
+  featuredSection: {
+    title: string;
+    description: string;
+    items: ResultExportMethodologyCard[];
+  };
+  alternativesSection: {
+    title: string;
+    description: string;
+    items: ResultExportMethodologyCard[];
+  };
+  answersSection: {
+    title: string;
+    description: string;
+    items: ResultExportAnswerBlock[];
+  };
+}
+
+export interface ResultExportPayload {
+  exportVersion: string;
+  exportedAt: string;
+  result: AssessmentResult;
+  document: ResultExportDocument;
 }

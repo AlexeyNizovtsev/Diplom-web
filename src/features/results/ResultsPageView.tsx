@@ -16,6 +16,9 @@ import {
 import { getQuestionnaireContent } from "@/content/questionnaire";
 import { buildAssessmentReviewBlocks } from "@/features/assessment/assessmentReview";
 import { useLocale } from "@/hooks/useLocale";
+import { buildResultExport } from "@/lib/export/buildResultExport";
+import { downloadResultJson } from "@/lib/export/downloadResultJson";
+import { downloadResultPdf } from "@/lib/export/downloadResultPdf";
 import { getDictionary } from "@/lib/i18n/getDictionary";
 import { buildAssessmentBlockRoute } from "@/lib/routing/routes";
 import { clearAssessmentProgress } from "@/lib/storage/assessmentProgress";
@@ -52,6 +55,7 @@ export function ResultsPageView({
   const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isAnswersDialogOpen, setIsAnswersDialogOpen] = useState(false);
+  const [activeExportFormat, setActiveExportFormat] = useState<"pdf" | "json" | null>(null);
 
   const questionnaireContent = useMemo(
     () => getQuestionnaireContent(locale),
@@ -87,6 +91,7 @@ export function ResultsPageView({
     }
 
     setIsAnswersDialogOpen(false);
+    setActiveExportFormat(null);
   }, [result]);
 
   useEffect(() => {
@@ -103,6 +108,21 @@ export function ResultsPageView({
   const interpretationPresentation = result
     ? buildInterpretationPresentation(result, content)
     : null;
+  const isExportingPdf = activeExportFormat === "pdf";
+  const isExportingJson = activeExportFormat === "json";
+
+  const buildExportDocument = (exportedAt: string) => {
+    if (!result) {
+      return null;
+    }
+
+    return buildResultExport({
+      result,
+      content,
+      answerBlocks,
+      exportedAt,
+    });
+  };
 
   const copyCode = async () => {
     if (!resultCode) {
@@ -131,6 +151,53 @@ export function ResultsPageView({
     router.push(buildAssessmentBlockRoute(firstAssessmentBlockId));
   };
 
+  const handleDownloadJson = async () => {
+    if (!result || activeExportFormat) {
+      return;
+    }
+
+    setActiveExportFormat("json");
+
+    try {
+      const exportedAt = new Date().toISOString();
+      const exportDocument = buildExportDocument(exportedAt);
+
+      if (!exportDocument) {
+        throw new Error("Cannot export without a result.");
+      }
+
+      downloadResultJson(result, exportDocument, exportedAt);
+      setIsDownloadMenuOpen(false);
+    } catch {
+      window.alert(content.topActions.exportFailedMessage);
+    } finally {
+      setActiveExportFormat(null);
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!result || activeExportFormat) {
+      return;
+    }
+
+    setActiveExportFormat("pdf");
+
+    try {
+      const exportDocument = buildExportDocument(new Date().toISOString());
+
+      if (!exportDocument) {
+        throw new Error("Cannot export without a result.");
+      }
+
+      await downloadResultPdf(result, exportDocument);
+      setIsDownloadMenuOpen(false);
+    } catch {
+      window.alert(content.topActions.exportFailedMessage);
+    } finally {
+      setActiveExportFormat(null);
+    }
+  };
+
   return (
     <div className="relative overflow-hidden pb-14 pt-12 lg:pb-20 lg:pt-16">
       <HomeBackground />
@@ -154,6 +221,8 @@ export function ResultsPageView({
                 isAnswersOpen={isAnswersDialogOpen}
                 isDownloadMenuOpen={isDownloadMenuOpen}
                 isCopied={isCopied}
+                isExportingPdf={isExportingPdf}
+                isExportingJson={isExportingJson}
                 onToggleAnswers={() => {
                   setIsDownloadMenuOpen(false);
                   setIsAnswersDialogOpen((current) => !current);
@@ -163,6 +232,8 @@ export function ResultsPageView({
                   setIsDownloadMenuOpen((current) => !current);
                 }}
                 onCopyCode={() => void copyCode()}
+                onDownloadPdf={() => void handleDownloadPdf()}
+                onDownloadJson={() => void handleDownloadJson()}
                 onRetakeAssessment={retakeAssessment}
               />
             ) : null}
@@ -196,7 +267,11 @@ export function ResultsPageView({
                 content={content}
                 resultCode={result.resultCode}
                 isCopied={isCopied}
+                isExportingPdf={isExportingPdf}
+                isExportingJson={isExportingJson}
                 onCopyCode={copyCode}
+                onDownloadPdf={() => void handleDownloadPdf()}
+                onDownloadJson={() => void handleDownloadJson()}
               />
             </>
           ) : (

@@ -11,7 +11,7 @@ export function AnswerOptionCard({
   label,
   description,
   isSelected,
-  onSelect
+  onSelect,
 }: AnswerOptionCardProps) {
   return (
     <button
@@ -23,7 +23,7 @@ export function AnswerOptionCard({
         "flex min-h-[8.5rem] w-full flex-col items-start justify-between rounded-[26px] border px-5 py-4 text-left transition duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
         isSelected
           ? "border-[#111318] bg-[#111318] text-white shadow-soft"
-          : "border-[#d9d5d0] bg-white/88 text-[#1c1f25] backdrop-blur-xl hover:border-[#c7b29e] hover:bg-[#fffaf5]"
+          : "border-[#d9d5d0] bg-white/88 text-[#1c1f25] backdrop-blur-xl hover:border-[#c7b29e] hover:bg-[#fffaf5]",
       )}
     >
       <div className="flex w-full items-start justify-between gap-3">
@@ -33,10 +33,10 @@ export function AnswerOptionCard({
         <span
           aria-hidden="true"
           className={cn(
-            "inline-flex h-8 w-8 items-center justify-center rounded-full border transition-colors",
+            "inline-flex min-h-8 min-w-8 items-center justify-center rounded-full border transition-colors",
             isSelected
               ? "border-white/30 bg-white/12 text-white"
-              : "border-[#e8ded4] bg-[#faf5ef] text-transparent"
+              : "border-[#e8ded4] bg-[#faf5ef] text-transparent",
           )}
         >
           <svg
@@ -56,7 +56,10 @@ export function AnswerOptionCard({
         </span>
       </div>
       <span
-        className={cn("pr-3 text-sm leading-6", isSelected ? "text-[#d8dce3]" : "text-[#6a6e75]")}
+        className={cn(
+          "pr-3 text-sm leading-6",
+          isSelected ? "text-[#d8dce3]" : "text-[#6a6e75]",
+        )}
       >
         {description}
       </span>

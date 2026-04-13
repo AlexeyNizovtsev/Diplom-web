@@ -21,7 +21,7 @@ export function AssessmentIntroCard({
   onStart,
   helperNote,
   resumeActionLabel,
-  onResume
+  onResume,
 }: AssessmentIntroCardProps) {
   return (
     <InfoCard className="rounded-[40px] border-white/30 bg-card/54 px-6 py-7 shadow-[0_18px_48px_rgba(17,19,24,0.08)] lg:min-h-[36rem] lg:px-12 lg:py-9">
@@ -69,24 +69,24 @@ export function AssessmentIntroCard({
           />
           <div className="flex w-full flex-col gap-3 lg:w-auto lg:flex-row lg:items-end lg:justify-end">
             {onResume && resumeActionLabel ? (
-              <div className="w-full space-y-2 lg:w-auto">
+              <div className="w-full space-y-2 lg:w-[18rem]">
                 {helperNote ? (
-                  <p className="text-right text-sm font-semibold text-[#6a6e75] lg:text-[0.98rem]">
+                  <p className="text-center text-sm font-semibold text-[#6a6e75] lg:text-[0.98rem]">
                     {helperNote}
                   </p>
                 ) : null}
                 <SecondaryButton
                   onClick={onResume}
-                  className="w-full px-6 py-4 text-base lg:w-auto lg:min-w-[14rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
+                  className="w-full px-6 py-4 text-base lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
                 >
                   {resumeActionLabel}
                 </SecondaryButton>
               </div>
             ) : null}
-            <div className="w-full lg:w-auto">
+            <div className="w-full lg:w-[18rem]">
               <PrimaryButton
                 onClick={onStart}
-                className="w-full justify-between px-6 py-4 text-base lg:w-[18rem] lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
+                className="w-full justify-between px-6 py-4 text-base lg:rounded-[28px] lg:px-7 lg:text-[1.05rem]"
                 trailingIcon={<ArrowRightIcon className="h-5 w-5" />}
               >
                 {content.introCard.primaryCta}

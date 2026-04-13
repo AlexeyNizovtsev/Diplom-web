@@ -1,8 +1,10 @@
 "use client";
 
+import { createPortal } from "react-dom";
 import { useEffect } from "react";
 
 import { InfoCard } from "@/components/cards/InfoCard";
+import { CloseIcon } from "@/components/icons/CloseIcon";
 import { PrimaryButton } from "@/components/controls/PrimaryButton";
 import { SecondaryButton } from "@/components/controls/SecondaryButton";
 
@@ -27,7 +29,7 @@ export function AssessmentRestartDialog({
   helperNote,
   onStartOver,
   onResume,
-  onDismiss
+  onDismiss,
 }: AssessmentRestartDialogProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -47,9 +49,13 @@ export function AssessmentRestartDialog({
     };
   }, [onDismiss]);
 
-  return (
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(17,19,24,0.42)] px-4 py-6 backdrop-blur-[6px]"
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-[rgba(17,19,24,0.42)] px-4 py-6 backdrop-blur-[6px]"
       role="presentation"
       onClick={onDismiss}
     >
@@ -77,36 +83,40 @@ export function AssessmentRestartDialog({
               <button
                 type="button"
                 onClick={onDismiss}
-                className="shrink-0 rounded-full border border-border/16 bg-white/55 px-3 py-1.5 text-sm font-semibold text-text-secondary transition hover:bg-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                aria-label={dismissCtaLabel}
+                className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border/16 bg-white/55 text-text-secondary transition hover:bg-white/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
-                {dismissCtaLabel}
+                <CloseIcon className="h-4 w-4" />
               </button>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-              <div className="w-full space-y-2 sm:w-auto">
+              <div className="w-full space-y-2 sm:w-[14.5rem]">
                 {helperNote ? (
-                  <p className="text-right text-sm font-semibold text-[#646973]">
+                  <p className="text-center text-sm font-semibold text-[#646973]">
                     {helperNote}
                   </p>
                 ) : null}
                 <SecondaryButton
                   onClick={onResume}
-                  className="w-full px-6 py-4 text-base sm:w-auto sm:min-w-[13rem]"
+                  className="w-full px-6 py-4 text-base"
                 >
                   {resumeCtaLabel}
                 </SecondaryButton>
               </div>
-              <PrimaryButton
-                onClick={onStartOver}
-                className="w-full px-6 py-4 text-base sm:w-auto sm:min-w-[13rem]"
-              >
-                {primaryCtaLabel}
-              </PrimaryButton>
+              <div className="w-full content-end sm:w-[14.5rem]">
+                <PrimaryButton
+                  onClick={onStartOver}
+                  className="w-full px-6 py-4 text-base"
+                >
+                  {primaryCtaLabel}
+                </PrimaryButton>
+              </div>
             </div>
           </div>
         </InfoCard>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

@@ -1,35 +1,55 @@
 import type {
+  ActiveRole,
   DimensionResult,
+  MethodologyRole,
   RankedMethodologyResult,
-  RecommendationMode,
-  RecommendationSupportFlag
+  RecommendationInterpretation,
+  RecommendationSupportFlag,
 } from "@/types/result";
+
+import { detectActiveRoles } from "@/lib/result/detectActiveRoles";
+import { getMethodologyRole } from "@/lib/result/methodologyRoles";
+import {
+  areRolesInSameOperationalFamily,
+  areRolesOperationalNeighbors,
+} from "@/lib/result/roleFamilies";
 
 const CLOSE_FIT_SCORE_GAP_THRESHOLD = 1;
 
-function getDimensionLevel(
-  dimensions: DimensionResult[],
-  dimensionKey: DimensionResult["dimensionKey"]
-) {
-  return dimensions.find((dimension) => dimension.dimensionKey === dimensionKey)?.level ?? 0;
+function isRoleActive(activeRoles: ActiveRole[], role: ActiveRole | undefined) {
+  return role ? activeRoles.includes(role) : false;
 }
 
-function isCompositeStrategyCase(
-  dimensions: DimensionResult[],
-  ranking: RankedMethodologyResult[]
+function getTopRoles(ranking: RankedMethodologyResult[]) {
+  return {
+    topMethodologyRole: ranking[0]
+      ? getMethodologyRole(ranking[0].methodologyId)
+      : undefined,
+    secondMethodologyRole: ranking[1]
+      ? getMethodologyRole(ranking[1].methodologyId)
+      : undefined,
+  };
+}
+
+function hasDistinctNecessaryProcessRole(
+  topMethodologyRole: MethodologyRole | undefined,
+  secondMethodologyRole: MethodologyRole | undefined,
+  activeRoles: ActiveRole[],
 ) {
-  const governanceLevel = getDimensionLevel(dimensions, "governanceFormalisation");
-  const riskLevel = getDimensionLevel(dimensions, "riskInnovationOrientation");
-  const secondMethodologyId = ranking[1]?.methodologyId;
+  if (!topMethodologyRole || !secondMethodologyRole) {
+    return false;
+  }
 
   return (
-    governanceLevel >= 3 &&
-    riskLevel >= 3 &&
-    secondMethodologyId === "spiral"
+    topMethodologyRole !== secondMethodologyRole &&
+    isRoleActive(activeRoles, topMethodologyRole) &&
+    isRoleActive(activeRoles, secondMethodologyRole) &&
+    !areRolesOperationalNeighbors(topMethodologyRole, secondMethodologyRole) &&
+    !areRolesInSameOperationalFamily(topMethodologyRole, secondMethodologyRole)
   );
 }
 
-function isCloseFitCase(ranking: RankedMethodologyResult[]) {
+function isRankingGapClose(ranking: RankedMethodologyResult[]) {
   const [topMethodology, secondMethodology] = ranking;
 
   if (!topMethodology || !secondMethodology) {
@@ -39,23 +59,58 @@ function isCloseFitCase(ranking: RankedMethodologyResult[]) {
   return topMethodology.score - secondMethodology.score <= CLOSE_FIT_SCORE_GAP_THRESHOLD;
 }
 
+function isCompositeStrategyCase(
+  topMethodologyRole: MethodologyRole | undefined,
+  secondMethodologyRole: MethodologyRole | undefined,
+  activeRoles: ActiveRole[],
+) {
+  return hasDistinctNecessaryProcessRole(
+    topMethodologyRole,
+    secondMethodologyRole,
+    activeRoles,
+  );
+}
+
+function isCloseFitCase(
+  ranking: RankedMethodologyResult[],
+  topMethodologyRole: MethodologyRole | undefined,
+  secondMethodologyRole: MethodologyRole | undefined,
+  activeRoles: ActiveRole[],
+) {
+  if (!isRankingGapClose(ranking)) {
+    return false;
+  }
+
+  if (!topMethodologyRole || !secondMethodologyRole) {
+    return false;
+  }
+
+  return (
+    areRolesOperationalNeighbors(topMethodologyRole, secondMethodologyRole) ||
+    !hasDistinctNecessaryProcessRole(
+      topMethodologyRole,
+      secondMethodologyRole,
+      activeRoles,
+    )
+  );
+}
+
 function detectSupportFlags(
-  dimensions: DimensionResult[],
-  ranking: RankedMethodologyResult[]
+  activeRoles: ActiveRole[],
+  ranking: RankedMethodologyResult[],
 ) {
   const supportFlags: RecommendationSupportFlag[] = [];
-  const complexityLevel = getDimensionLevel(dimensions, "systemIntegrationComplexity");
-  const disciplineLevel = getDimensionLevel(dimensions, "organisationalDiscipline");
-  const iterationLevel = getDimensionLevel(dimensions, "iterationStructure");
   const topThreeMethodologyIds = ranking.slice(0, 3).map((item) => item.methodologyId);
 
   if (
-    complexityLevel >= 3 &&
-    disciplineLevel >= 2 &&
-    iterationLevel >= 2 &&
+    activeRoles.includes("architecture_control") &&
     topThreeMethodologyIds.includes("rup")
   ) {
     supportFlags.push("architecture_supporting_option");
+  }
+
+  if (activeRoles.includes("risk_driven") && topThreeMethodologyIds.includes("spiral")) {
+    supportFlags.push("risk_supporting_option");
   }
 
   return supportFlags;
@@ -63,20 +118,38 @@ function detectSupportFlags(
 
 export function detectRecommendationMode(
   dimensions: DimensionResult[],
-  ranking: RankedMethodologyResult[]
-): {
-  mode: RecommendationMode;
-  supportFlags: RecommendationSupportFlag[];
-} {
-  const mode = isCompositeStrategyCase(dimensions, ranking)
+  ranking: RankedMethodologyResult[],
+): Pick<
+  RecommendationInterpretation,
+  | "activeRoles"
+  | "mode"
+  | "supportFlags"
+  | "topMethodologyRole"
+  | "secondMethodologyRole"
+> {
+  const activeRoles = detectActiveRoles(dimensions);
+  const { topMethodologyRole, secondMethodologyRole } = getTopRoles(ranking);
+  const mode = isCompositeStrategyCase(
+    topMethodologyRole,
+    secondMethodologyRole,
+    activeRoles,
+  )
     ? "composite_strategy"
-    : isCloseFitCase(ranking)
+    : isCloseFitCase(
+        ranking,
+        topMethodologyRole,
+        secondMethodologyRole,
+        activeRoles,
+      )
       ? "close_fit"
       : "single_fit";
 
   return {
+    activeRoles,
     mode,
-    supportFlags: detectSupportFlags(dimensions, ranking)
+    topMethodologyRole,
+    secondMethodologyRole,
+    supportFlags: detectSupportFlags(activeRoles, ranking),
   };
 }
 

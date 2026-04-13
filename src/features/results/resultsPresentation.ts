@@ -1,9 +1,12 @@
 import { buildRecommendationInterpretation } from "@/lib/result/buildRecommendationInterpretation";
+import { getMethodologyRole } from "@/lib/result/methodologyRoles";
 import type { ResultsDictionary } from "@/types/common";
 import type { MethodologyId } from "@/types/methodology";
 import type {
   AssessmentResult,
+  MethodologyRole,
   RecommendationInterpretation,
+  RecommendationSupportFlag,
 } from "@/types/result";
 
 export interface InterpretationPresentation {
@@ -12,7 +15,7 @@ export interface InterpretationPresentation {
   summary: string;
   primaryExplanation: string;
   secondaryExplanation?: string;
-  supportNote?: string;
+  supportNotes: string[];
 }
 
 function replaceTemplate(
@@ -42,7 +45,7 @@ export function getMethodologyInterpretationLabels(
   content: ResultsDictionary,
 ) {
   return getMethodologyInterpretationIds(methodologyId, interpretation).map(
-    (label) => content.interpretation.methodologyLabels[label],
+    (label) => content.interpretation.methodologyLabels[label] ?? label,
   );
 }
 
@@ -58,6 +61,43 @@ export function hasPriorityInterpretationLabel(
   );
 }
 
+function getRoleLabel(
+  role: MethodologyRole | undefined,
+  content: ResultsDictionary,
+) {
+  if (!role) {
+    return "";
+  }
+
+  return content.interpretation.roleLabels?.[role] ?? role.replaceAll("_", " ");
+}
+
+function buildSupportNote(
+  flag: RecommendationSupportFlag,
+  result: AssessmentResult,
+  content: ResultsDictionary,
+) {
+  const template = content.interpretation.supportFlagTemplates[flag];
+
+  if (!template) {
+    return undefined;
+  }
+
+  const methodologyId =
+    flag === "architecture_supporting_option" ? "rup" : "spiral";
+  const methodology = result.ranking
+    .slice(0, 3)
+    .find((item) => item.methodologyId === methodologyId);
+
+  if (!methodology) {
+    return undefined;
+  }
+
+  return replaceTemplate(template, {
+    methodology: methodology.methodologyTitle ?? methodology.methodologyId,
+  });
+}
+
 export function buildInterpretationPresentation(
   result: AssessmentResult,
   content: ResultsDictionary,
@@ -65,9 +105,14 @@ export function buildInterpretationPresentation(
   const interpretation = getRecommendationInterpretation(result);
   const topMethodology = result.ranking[0];
   const secondMethodology = result.ranking[1];
-  const architectureSupportMethodology = result.ranking
-    .slice(0, 3)
-    .find((item) => item.methodologyId === "rup");
+  const topRole =
+    interpretation.topMethodologyRole ??
+    (topMethodology ? getMethodologyRole(topMethodology.methodologyId) : undefined);
+  const secondRole =
+    interpretation.secondMethodologyRole ??
+    (secondMethodology
+      ? getMethodologyRole(secondMethodology.methodologyId)
+      : undefined);
 
   return {
     interpretation,
@@ -78,6 +123,7 @@ export function buildInterpretationPresentation(
       {
         topMethodology:
           topMethodology?.methodologyTitle ?? topMethodology?.methodologyId,
+        topRole: getRoleLabel(topRole, content),
       },
     ),
     secondaryExplanation: secondMethodology
@@ -87,21 +133,12 @@ export function buildInterpretationPresentation(
             secondMethodology:
               secondMethodology.methodologyTitle ??
               secondMethodology.methodologyId,
+            secondRole: getRoleLabel(secondRole, content),
           },
         )
       : undefined,
-    supportNote:
-      interpretation.supportFlags.includes("architecture_supporting_option") &&
-      architectureSupportMethodology
-        ? replaceTemplate(
-            content.interpretation.supportFlagTemplates
-              .architecture_supporting_option,
-            {
-              methodology:
-                architectureSupportMethodology.methodologyTitle ??
-                architectureSupportMethodology.methodologyId,
-            },
-          )
-        : undefined,
+    supportNotes: interpretation.supportFlags
+      .map((flag) => buildSupportNote(flag, result, content))
+      .filter((note): note is string => Boolean(note)),
   };
 }
