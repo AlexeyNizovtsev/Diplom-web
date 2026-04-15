@@ -1,5 +1,11 @@
 import type { ActiveRole, DimensionResult } from "@/types/result";
 
+import {
+  getDimensionLevels,
+  isFlowExclusiveSignal,
+  isStructuredIterationSignal,
+} from "@/lib/result/interpretationContext";
+
 export function getDimensionLevel(
   dimensions: DimensionResult[],
   dimensionKey: DimensionResult["dimensionKey"],
@@ -11,6 +17,7 @@ export function getDimensionLevel(
 }
 
 export function detectActiveRoles(dimensions: DimensionResult[]): ActiveRole[] {
+  const levels = getDimensionLevels(dimensions);
   const governanceLevel = getDimensionLevel(
     dimensions,
     "governanceFormalisation",
@@ -47,11 +54,11 @@ export function detectActiveRoles(dimensions: DimensionResult[]): ActiveRole[] {
     activeRoles.push("architecture_control");
   }
 
-  if (iterationLevel >= 2 && iterationLevel < 3) {
+  if (isStructuredIterationSignal(levels)) {
     activeRoles.push("adaptive_iterations");
   }
 
-  if (iterationLevel === 3) {
+  if (isFlowExclusiveSignal(levels)) {
     activeRoles.push("flow_control");
   }
 

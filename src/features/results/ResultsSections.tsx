@@ -20,6 +20,8 @@ import type {
 
 import type { InterpretationPresentation } from "@/features/results/resultsPresentation";
 import {
+  getBestFitSectionCopy,
+  getMethodologyBadgeLabel,
   getMethodologyInterpretationLabels,
   hasPriorityInterpretationLabel,
 } from "@/features/results/resultsPresentation";
@@ -81,12 +83,14 @@ function AlternativeDimensionsPanel({
 function AlternativeCollapsedPreview({
   item,
   content,
+  interpretation,
   interpretationLabels,
   isExpanded,
   onToggle,
 }: {
   item: RankedMethodologyResult;
   content: ResultsDictionary;
+  interpretation: RecommendationInterpretation;
   interpretationLabels: string[];
   isExpanded: boolean;
   onToggle: () => void;
@@ -112,7 +116,14 @@ function AlternativeCollapsedPreview({
       </div>
 
       <div className="flex shrink-0 items-start gap-3 pt-1">
-        <RankChip label={content.fitLabels[item.fitTier]} />
+        <RankChip
+          label={getMethodologyBadgeLabel(
+            item.methodologyId,
+            item.fitTier,
+            interpretation,
+            content,
+          )}
+        />
         {item.signalTags[0] ? (
           <span className="rounded-full border border-[#ded5cb] bg-[#f6f1eb] px-4 py-2 text-sm font-bold text-[#5c626a]">
             {item.signalTags[0].labelText ?? item.signalTags[0].labelKey}
@@ -330,7 +341,12 @@ export function RankedSummarySection({
                         {item.methodologyTitle ?? item.methodologyId}
                       </h3>
                       <RankChip
-                        label={content.fitLabels[item.fitTier]}
+                        label={getMethodologyBadgeLabel(
+                          item.methodologyId,
+                          item.fitTier,
+                          interpretation,
+                          content,
+                        )}
                         tone={
                           item.isTopFit || hasPriorityInterpretationLabel(item.methodologyId, interpretation)
                             ? "emphasis"
@@ -441,6 +457,7 @@ export function BestFitSection({
   interpretation: RecommendationInterpretation;
 }) {
   const topResult = result.ranking[0];
+  const sectionCopy = getBestFitSectionCopy(interpretation, content);
   const interpretationLabels = getMethodologyInterpretationLabels(
     topResult.methodologyId,
     interpretation,
@@ -454,7 +471,7 @@ export function BestFitSection({
         description={topResult.overviewText}
         signalTags={topResult.signalTags}
         interpretationLabels={interpretationLabels}
-        badgeLabel={content.bestFit.badge}
+        badgeLabel={sectionCopy.leadBadge}
         badgeTone="emphasis"
         className={topMatchSurfaceClasses}
       >
@@ -496,6 +513,7 @@ export function CriticalComplementarySection({
     return null;
   }
 
+  const sectionCopy = getBestFitSectionCopy(interpretation, content);
   const interpretationLabels = getMethodologyInterpretationLabels(
     item.methodologyId,
     interpretation,
@@ -512,7 +530,7 @@ export function CriticalComplementarySection({
         supportingText={item.tradeoffText}
         signalTags={item.signalTags}
         interpretationLabels={interpretationLabels}
-        badgeLabel={content.fitLabels[item.fitTier]}
+        badgeLabel={sectionCopy.complementBadge}
         badgeTone="emphasis"
         className={topMatchSurfaceClasses}
       >
@@ -573,12 +591,14 @@ export function BestFitMethodologySection({
   result: AssessmentResult;
   interpretation: RecommendationInterpretation;
 }) {
+  const sectionCopy = getBestFitSectionCopy(interpretation, content);
+
   return (
     <section className="space-y-5">
       <div className="space-y-2">
-        <h2 className={resultsSectionTitleClass}>{content.bestFit.sectionTitle}</h2>
+        <h2 className={resultsSectionTitleClass}>{sectionCopy.title}</h2>
         <p className="max-w-5xl text-base leading-7 text-text-secondary">
-          {content.bestFit.sectionDescription}
+          {sectionCopy.description}
         </p>
       </div>
 
@@ -677,6 +697,7 @@ export function AlternativesSection({
                   <AlternativeCollapsedPreview
                     item={item}
                     content={content}
+                    interpretation={interpretation}
                     interpretationLabels={interpretationLabels}
                     isExpanded={isExpanded}
                     onToggle={() => toggleAlternative(item.methodologyId)}
@@ -693,7 +714,12 @@ export function AlternativesSection({
                     signalTags={item.signalTags}
                     interpretationLabels={interpretationLabels}
                     signalTagTone="muted"
-                    badgeLabel={content.fitLabels[item.fitTier]}
+                    badgeLabel={getMethodologyBadgeLabel(
+                      item.methodologyId,
+                      item.fitTier,
+                      interpretation,
+                      content,
+                    )}
                     headerActions={
                       isCollapsible ? (
                         <button

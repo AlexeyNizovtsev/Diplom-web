@@ -1,9 +1,12 @@
 import { buildRecommendationInterpretation } from "@/lib/result/buildRecommendationInterpretation";
+import { buildInterpretationOverrides } from "@/lib/result/explanationTemplates";
+import { getDimensionLevels } from "@/lib/result/interpretationContext";
 import { getMethodologyRole } from "@/lib/result/methodologyRoles";
 import type { ResultsDictionary } from "@/types/common";
 import type { MethodologyId } from "@/types/methodology";
 import type {
   AssessmentResult,
+  FitTier,
   MethodologyRole,
   RecommendationInterpretation,
   RecommendationSupportFlag,
@@ -98,6 +101,63 @@ function buildSupportNote(
   });
 }
 
+export function getBestFitSectionCopy(
+  interpretation: RecommendationInterpretation,
+  content: ResultsDictionary,
+) {
+  if (interpretation.mode === "composite_strategy") {
+    return {
+      title: content.bestFit.compositeSectionTitle,
+      description: content.bestFit.compositeSectionDescription,
+      leadBadge: content.bestFit.compositeLeadBadge,
+      complementBadge: content.bestFit.compositeComplementBadge,
+    };
+  }
+
+  if (interpretation.mode === "close_fit") {
+    return {
+      title: content.bestFit.sectionTitle,
+      description: content.bestFit.closeFitSectionDescription,
+      leadBadge: content.bestFit.closeFitBadge,
+      complementBadge: content.fitLabels.strongAlternative,
+    };
+  }
+
+  return {
+    title: content.bestFit.sectionTitle,
+    description: content.bestFit.sectionDescription,
+    leadBadge: content.bestFit.badge,
+    complementBadge: content.fitLabels.strongAlternative,
+  };
+}
+
+export function getMethodologyBadgeLabel(
+  methodologyId: MethodologyId,
+  fitTier: FitTier,
+  interpretation: RecommendationInterpretation,
+  content: ResultsDictionary,
+) {
+  const labels = getMethodologyInterpretationIds(methodologyId, interpretation);
+
+  if (labels.includes("dominant_constraint_match")) {
+    return content.bestFit.compositeLeadBadge;
+  }
+
+  if (labels.includes("critical_complementary_strategy")) {
+    return content.bestFit.compositeComplementBadge;
+  }
+
+  if (labels.includes("best_current_fit")) {
+    return content.bestFit.closeFitBadge;
+  }
+
+  if (interpretation.mode === "composite_strategy" && fitTier === "strongAlternative") {
+    return content.alternatives.supportingBadge;
+  }
+
+  return content.fitLabels[fitTier];
+}
+
 export function buildInterpretationPresentation(
   result: AssessmentResult,
   content: ResultsDictionary,
@@ -113,32 +173,47 @@ export function buildInterpretationPresentation(
     (secondMethodology
       ? getMethodologyRole(secondMethodology.methodologyId)
       : undefined);
+  const locale = result.metadata?.locale ?? "en";
+  const overrides = buildInterpretationOverrides({
+    locale,
+    topMethodologyId: topMethodology?.methodologyId,
+    topMethodologyTitle:
+      topMethodology?.methodologyTitle ?? topMethodology?.methodologyId,
+    secondMethodologyId: secondMethodology?.methodologyId,
+    secondMethodologyTitle:
+      secondMethodology?.methodologyTitle ?? secondMethodology?.methodologyId,
+    mode: interpretation.mode,
+    rankingMethodologyIds: result.ranking.map((item) => item.methodologyId),
+    levels: getDimensionLevels(result.dimensions),
+  });
+  const supportNotes = [
+    ...overrides.supportNotes,
+    ...interpretation.supportFlags
+      .map((flag) => buildSupportNote(flag, result, content))
+      .filter((note): note is string => Boolean(note)),
+  ];
 
   return {
     interpretation,
     heading: content.interpretation.modeHeadings[interpretation.mode],
-    summary: content.interpretation.modeSummaries[interpretation.mode],
-    primaryExplanation: replaceTemplate(
-      content.interpretation.primaryTemplates[interpretation.mode],
-      {
+    summary:
+      overrides.summary ?? content.interpretation.modeSummaries[interpretation.mode],
+    primaryExplanation:
+      overrides.primaryExplanation ??
+      replaceTemplate(content.interpretation.primaryTemplates[interpretation.mode], {
         topMethodology:
           topMethodology?.methodologyTitle ?? topMethodology?.methodologyId,
         topRole: getRoleLabel(topRole, content),
-      },
-    ),
+      }),
     secondaryExplanation: secondMethodology
-      ? replaceTemplate(
-          content.interpretation.secondaryTemplates[interpretation.mode],
-          {
-            secondMethodology:
-              secondMethodology.methodologyTitle ??
-              secondMethodology.methodologyId,
-            secondRole: getRoleLabel(secondRole, content),
-          },
-        )
+      ? overrides.secondaryExplanation ??
+        replaceTemplate(content.interpretation.secondaryTemplates[interpretation.mode], {
+          secondMethodology:
+            secondMethodology.methodologyTitle ??
+            secondMethodology.methodologyId,
+          secondRole: getRoleLabel(secondRole, content),
+        })
       : undefined,
-    supportNotes: interpretation.supportFlags
-      .map((flag) => buildSupportNote(flag, result, content))
-      .filter((note): note is string => Boolean(note)),
+    supportNotes,
   };
 }

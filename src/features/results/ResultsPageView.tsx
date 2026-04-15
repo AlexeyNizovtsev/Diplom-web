@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -189,7 +189,7 @@ export function ResultsPageView({
         throw new Error("Cannot export without a result.");
       }
 
-      await downloadResultPdf(result, exportDocument);
+      await downloadResultPdf(result, exportDocument, content);
       setIsDownloadMenuOpen(false);
     } catch {
       window.alert(content.topActions.exportFailedMessage);

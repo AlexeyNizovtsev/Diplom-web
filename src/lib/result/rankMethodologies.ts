@@ -4,6 +4,12 @@ import type { FitTier, ResultReasonId } from "@/types/result";
 
 import type { AggregatedDimensionSignals } from "@/lib/assessment/computeDimensionSignals";
 import type { NormalizedAssessmentAnswers } from "@/lib/assessment/normalizeAnswers";
+import {
+  getDimensionLevels,
+  isFlowExclusiveSignal,
+  isStructuredIterationSignal,
+  preferRiskDrivenOverAdaptiveIterations,
+} from "@/lib/result/interpretationContext";
 
 export interface MethodologyRankingEvaluation {
   methodologyId: MethodologyId;
@@ -19,11 +25,16 @@ type DimensionTargetProfile = Record<DimensionKey, number>;
 
 interface RankingContext {
   selectedOptionIds: Record<string, string>;
+  dimensionLevels: Record<DimensionKey, 0 | 1 | 2 | 3>;
   dimensionAverages: Record<DimensionKey, number>;
   linearVotes: number;
   milestoneVotes: number;
   structuredVotes: number;
   flowVotes: number;
+  flowExclusive: boolean;
+  structuredIterations: boolean;
+  structuredIterationsWithStrongRisk: boolean;
+  preferRiskDrivenComposite: boolean;
   strictGovernance: boolean;
   highGovernance: boolean;
   lowGovernance: boolean;
@@ -33,7 +44,11 @@ interface RankingContext {
   lowRisk: boolean;
   disciplinedTeam: boolean;
   architectureHeavy: boolean;
+  veryHighComplexity: boolean;
   integrationHeavy: boolean;
+  strongExperimentation: boolean;
+  criticalFailureImpact: boolean;
+  heavyArchitectureRiskCase: boolean;
 }
 
 const methodologyDefaultOrder: MethodologyId[] = [
@@ -113,6 +128,7 @@ function buildRankingContext(
   const dimensionAverages = Object.fromEntries(
     dimensions.map((dimension) => [dimension.dimensionKey, dimension.averageValue])
   ) as Record<DimensionKey, number>;
+  const dimensionLevels = getDimensionLevels(dimensions);
   const linearVotes = countVotes([
     selectedOptionIds.deliveryRhythm === "linear",
     selectedOptionIds.reviewCadence === "atTheEnd",
@@ -136,11 +152,19 @@ function buildRankingContext(
 
   return {
     selectedOptionIds,
+    dimensionLevels,
     dimensionAverages,
     linearVotes,
     milestoneVotes,
     structuredVotes,
     flowVotes,
+    flowExclusive: isFlowExclusiveSignal(dimensionLevels),
+    structuredIterations: isStructuredIterationSignal(dimensionLevels),
+    structuredIterationsWithStrongRisk:
+      isStructuredIterationSignal(dimensionLevels) &&
+      dimensionLevels.riskInnovationOrientation >= 3,
+    preferRiskDrivenComposite:
+      preferRiskDrivenOverAdaptiveIterations(dimensionLevels),
     strictGovernance:
       selectedOptionIds.regulatoryCompliance === "strictRegulatory" ||
       selectedOptionIds.stagedDocumentation === "veryHigh" ||
@@ -157,7 +181,31 @@ function buildRankingContext(
       dimensionAverages.systemIntegrationComplexity >= 2 ||
       selectedOptionIds.architectureComplexity === "complex" ||
       selectedOptionIds.architectureComplexity === "veryComplex",
-    integrationHeavy: dimensionAverages.systemIntegrationComplexity >= 1.8
+    veryHighComplexity:
+      dimensionAverages.systemIntegrationComplexity >= 2.5 ||
+      selectedOptionIds.architectureComplexity === "veryComplex",
+    integrationHeavy: dimensionAverages.systemIntegrationComplexity >= 1.8,
+    strongExperimentation:
+      selectedOptionIds.technicalUncertainty === "high" ||
+      selectedOptionIds.technicalUncertainty === "veryHigh" ||
+      selectedOptionIds.rndCentrality === "significant" ||
+      selectedOptionIds.rndCentrality === "core",
+    criticalFailureImpact:
+      selectedOptionIds.failureCriticality === "high" ||
+      selectedOptionIds.failureCriticality === "critical",
+    heavyArchitectureRiskCase:
+      isStructuredIterationSignal(dimensionLevels) &&
+      dimensionAverages.organisationalDiscipline >= 1.8 &&
+      dimensionAverages.systemIntegrationComplexity >= 2.5 &&
+      dimensionAverages.riskInnovationOrientation >= 2.4 &&
+      (
+        selectedOptionIds.technicalUncertainty === "high" ||
+        selectedOptionIds.technicalUncertainty === "veryHigh" ||
+        selectedOptionIds.rndCentrality === "significant" ||
+        selectedOptionIds.rndCentrality === "core" ||
+        selectedOptionIds.failureCriticality === "high" ||
+        selectedOptionIds.failureCriticality === "critical"
+      )
   };
 }
 
@@ -262,12 +310,19 @@ function evaluateMethodology(
       if (context.highRisk) {
         addPositive(accumulator, 7, "highRiskExploration", { signature: 3 });
       }
-      if (
-        context.selectedOptionIds.technicalUncertainty === "high" ||
-        context.selectedOptionIds.technicalUncertainty === "veryHigh" ||
-        context.selectedOptionIds.rndCentrality === "significant" ||
-        context.selectedOptionIds.rndCentrality === "core"
-      ) {
+      if (context.structuredIterationsWithStrongRisk) {
+        addPositive(accumulator, 2, "highRiskExploration", { signature: 1 });
+      }
+      if (context.preferRiskDrivenComposite) {
+        addPositive(accumulator, 4, "prototypingFocus", { signature: 2 });
+      }
+      if (context.strongExperimentation) {
+        addPositive(accumulator, 3, "prototypingFocus", { signature: 1 });
+      }
+      if (context.criticalFailureImpact) {
+        addPositive(accumulator, 2, "highRiskExploration", { signature: 1 });
+      }
+      if (context.heavyArchitectureRiskCase) {
         addPositive(accumulator, 3, "prototypingFocus", { signature: 1 });
       }
       if (context.integrationHeavy) {
@@ -279,6 +334,9 @@ function evaluateMethodology(
       if (context.lowRisk) {
         addPenalty(accumulator, 3);
       }
+      if (context.flowExclusive && !context.highRisk) {
+        addPenalty(accumulator, 2);
+      }
       break;
 
     case "rup":
@@ -288,11 +346,19 @@ function evaluateMethodology(
       if (context.disciplinedTeam) {
         addPositive(accumulator, 4, "disciplinedTeam", { signature: 2 });
       }
-      if (context.structuredVotes >= 1 || context.milestoneVotes >= 2) {
+      if (context.structuredIterations) {
+        addPositive(accumulator, 1, "structuredIterations");
+      } else if (context.milestoneVotes >= 2) {
         addPositive(accumulator, 2, "structuredIterations");
       }
       if (context.integrationHeavy) {
         addPositive(accumulator, 2, "integrationComplexity");
+      }
+      if (context.veryHighComplexity && context.disciplinedTeam) {
+        addPositive(accumulator, 3, "architectureHeavy", { signature: 1 });
+      }
+      if (context.heavyArchitectureRiskCase) {
+        addPositive(accumulator, 2, "integrationComplexity", { signature: 1 });
       }
       if (context.highGovernance && !context.strictGovernance) {
         addPositive(accumulator, 1, "changeControlledScope");
@@ -306,7 +372,7 @@ function evaluateMethodology(
       break;
 
     case "scrum":
-      if (context.structuredVotes >= 2) {
+      if (context.structuredIterations) {
         addPositive(accumulator, 7, "structuredIterations", { signature: 3 });
       }
       if (context.adaptiveRequirements) {
@@ -324,16 +390,32 @@ function evaluateMethodology(
       if (context.strictGovernance) {
         addPenalty(accumulator, 5);
       }
-      if (context.flowVotes >= 2) {
+      if (context.flowExclusive) {
+        addPenalty(accumulator, 4);
+      } else if (context.flowVotes >= 2) {
         addPenalty(accumulator, 2);
       }
       if (context.stableRequirements && context.linearVotes >= 2) {
         addPenalty(accumulator, 2);
       }
+      if (context.preferRiskDrivenComposite) {
+        addPenalty(accumulator, 4);
+      }
+      if (context.veryHighComplexity && context.disciplinedTeam) {
+        addPenalty(accumulator, 3);
+      }
+      if (context.highRisk && context.strongExperimentation) {
+        addPenalty(accumulator, 2);
+      }
+      if (context.heavyArchitectureRiskCase) {
+        addPenalty(accumulator, 4);
+      }
       break;
 
     case "kanban":
-      if (context.flowVotes >= 2) {
+      if (context.flowExclusive) {
+        addPositive(accumulator, 9, "continuousFlow", { signature: 4 });
+      } else if (context.flowVotes >= 2) {
         addPositive(accumulator, 7, "continuousFlow", { signature: 3 });
       }
       if (context.selectedOptionIds.workOrganisation === "wipLimitedPullFlow") {

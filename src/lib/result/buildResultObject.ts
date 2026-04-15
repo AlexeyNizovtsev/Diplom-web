@@ -15,7 +15,13 @@ import type {
 
 import { computeDimensionSignals } from "@/lib/assessment/computeDimensionSignals";
 import { normalizeAnswers } from "@/lib/assessment/normalizeAnswers";
+import {
+  buildMethodologyAlternativeNarrative,
+  buildMethodologyConditionalOutcome,
+  getDimensionHighlightOwnershipAdjustment,
+} from "@/lib/result/explanationTemplates";
 import { buildRecommendationInterpretation } from "@/lib/result/buildRecommendationInterpretation";
+import { getDimensionLevels } from "@/lib/result/interpretationContext";
 import {
   methodologyDimensionTargets,
   rankMethodologies
@@ -137,12 +143,21 @@ function resolveTopDimensionHighlights(
   methodologyId: MethodologyId,
   dimensions: ReturnType<typeof computeDimensionSignals>,
   dimensionAverages: Record<DimensionKey, number>,
+  dimensionLevels: ReturnType<typeof getDimensionLevels>,
   resultsDictionary: ResultsDictionary
 ) {
   return dimensions
     .map((dimension) => {
       const targetValue = methodologyDimensionTargets[methodologyId][dimension.dimensionKey];
-      const matchScore = 3 - Math.abs(dimensionAverages[dimension.dimensionKey] - targetValue);
+      const ownershipAdjustment = getDimensionHighlightOwnershipAdjustment({
+        methodologyId,
+        dimensionKey: dimension.dimensionKey,
+        levels: dimensionLevels,
+      });
+      const matchScore =
+        3 -
+        Math.abs(dimensionAverages[dimension.dimensionKey] - targetValue) +
+        ownershipAdjustment;
 
       return {
         dimensionKey: dimension.dimensionKey,
@@ -185,12 +200,26 @@ export function buildResultObject({
   const dimensionAverages = Object.fromEntries(
     dimensions.map((dimension) => [dimension.dimensionKey, dimension.averageValue])
   ) as Record<DimensionKey, number>;
+  const dimensionLevels = getDimensionLevels(dimensions);
+  const topMethodologyId = rankingEvaluations[0]?.methodologyId;
+  const topMethodologyTitle = topMethodologyId
+    ? methodologyContentMap[topMethodologyId].title
+    : "";
   const ranking: AssessmentResult["ranking"] = rankingEvaluations.map((evaluation) => {
     const methodologyContent = methodologyContentMap[evaluation.methodologyId];
     const fallbackReasonIds: ResultReasonId[] =
       evaluation.reasonIds.length > 0 ? evaluation.reasonIds : ["disciplinedTeam"];
     const shortReasons = resolveReasons(fallbackReasonIds, resultsDictionary, locale, 2);
     const overviewReasons = resolveReasons(fallbackReasonIds, resultsDictionary, locale, 3);
+    const alternativeNarrative = !evaluation.isTopFit && topMethodologyId && topMethodologyTitle
+      ? buildMethodologyAlternativeNarrative({
+          locale,
+          methodologyId: evaluation.methodologyId,
+          topMethodologyId,
+          topMethodologyTitle,
+          levels: dimensionLevels,
+        })
+      : null;
 
     return {
       methodologyId: evaluation.methodologyId,
@@ -210,20 +239,32 @@ export function buildResultObject({
       overviewText: replaceTemplate(
         evaluation.isTopFit
           ? resultsDictionary.narrative.topOverviewTemplate
-          : resultsDictionary.narrative.alternativeOverviewTemplate,
+          : alternativeNarrative?.overviewText
+            ? "{alternativeOverview}"
+            : resultsDictionary.narrative.alternativeOverviewTemplate,
         {
           methodology: methodologyContent.title,
-          reasons: overviewReasons
+          reasons: overviewReasons,
+          alternativeOverview: alternativeNarrative?.overviewText,
         }
       ),
       dimensionHighlights: resolveTopDimensionHighlights(
         evaluation.methodologyId,
         dimensions,
         dimensionAverages,
+        dimensionLevels,
         resultsDictionary
       ),
-      outcomeText: resultsDictionary.narrative.outcomeTexts[evaluation.methodologyId],
-      tradeoffText: "",
+      outcomeText:
+        evaluation.isTopFit || !topMethodologyId
+          ? resultsDictionary.narrative.outcomeTexts[evaluation.methodologyId]
+          : buildMethodologyConditionalOutcome({
+              locale,
+              methodologyId: evaluation.methodologyId,
+              topMethodologyId,
+              levels: dimensionLevels,
+            }) ?? resultsDictionary.narrative.outcomeTexts[evaluation.methodologyId],
+      tradeoffText: evaluation.isTopFit ? "" : alternativeNarrative?.tradeoffText ?? "",
       isTopFit: evaluation.isTopFit
     };
   });
@@ -243,7 +284,8 @@ export function buildResultObject({
             methodology: item.methodologyTitle
           })
         : undefined
-      : replaceTemplate(resultsDictionary.narrative.alternativeTradeoffTemplate, {
+      : item.tradeoffText ||
+        replaceTemplate(resultsDictionary.narrative.alternativeTradeoffTemplate, {
           topMethodology: topRanking.methodologyTitle
         });
   });

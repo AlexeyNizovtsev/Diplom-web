@@ -100,16 +100,25 @@ function detectSupportFlags(
   ranking: RankedMethodologyResult[],
 ) {
   const supportFlags: RecommendationSupportFlag[] = [];
+  const topMethodologyId = ranking[0]?.methodologyId;
+  const secondMethodologyId = ranking[1]?.methodologyId;
   const topThreeMethodologyIds = ranking.slice(0, 3).map((item) => item.methodologyId);
 
   if (
     activeRoles.includes("architecture_control") &&
-    topThreeMethodologyIds.includes("rup")
+    topThreeMethodologyIds.includes("rup") &&
+    topMethodologyId !== "rup" &&
+    secondMethodologyId !== "rup"
   ) {
     supportFlags.push("architecture_supporting_option");
   }
 
-  if (activeRoles.includes("risk_driven") && topThreeMethodologyIds.includes("spiral")) {
+  if (
+    activeRoles.includes("risk_driven") &&
+    topThreeMethodologyIds.includes("spiral") &&
+    topMethodologyId !== "spiral" &&
+    secondMethodologyId !== "spiral"
+  ) {
     supportFlags.push("risk_supporting_option");
   }
 

@@ -271,7 +271,13 @@ export interface ResultsDictionary {
   bestFit: {
     sectionTitle: string;
     sectionDescription: string;
+    compositeSectionTitle: string;
+    compositeSectionDescription: string;
+    closeFitSectionDescription: string;
     badge: string;
+    compositeLeadBadge: string;
+    compositeComplementBadge: string;
+    closeFitBadge: string;
     keySignalsLabel: string;
     dimensionsLabel: string;
     outcomeLabel: string;
@@ -284,6 +290,7 @@ export interface ResultsDictionary {
   alternatives: {
     title: string;
     description: string;
+    supportingBadge: string;
     topDimensionsLabel: string;
     expandActionLabel: string;
     collapseActionLabel: string;
@@ -324,6 +331,49 @@ export interface ResultsDictionary {
     methodologyDetailsLabel: string;
     answersSectionTitle: string;
     answersSectionDescription: string;
+    report: {
+      executiveSummaryTitle: string;
+      rankedComparisonTitle: string;
+      topFitAnalysisTitle: string;
+      secondaryStrategyTitle: string;
+      dimensionProfileTitle: string;
+      methodologyNotesTitle: string;
+      recommendationModeLabel: string;
+      readingGuidanceLabel: string;
+      primaryRecommendationLabel: string;
+      complementaryRecommendationLabel: string;
+      keyDriversLabel: string;
+      signalSummaryLabel: string;
+      rankingPreviewLabel: string;
+      methodologyLabel?: string;
+      fitLabel?: string;
+      coreRoleLabel: string;
+      strongestDimensionsLabel: string;
+      rationaleLabel: string;
+      strongestDiscriminatorLabel: string;
+      nearestAlternativeLabel: string;
+      lowestFitPatternLabel: string;
+      whyItLeadsLabel: string;
+      caveatsLabel: string;
+      whyNotOthersLabel: string;
+      recommendedFirstMoveLabel: string;
+      whatRaisesAlternativeLabel: string;
+      switchingConditionsLabel: string;
+      stayWithTopLabel: string;
+      moveTowardAlternativeLabel: string;
+      operationalDifferenceLabel: string;
+      currentSignalLabel: string;
+      effectOnRecommendationLabel: string;
+      supportsMethodologyLabel: string;
+      decisionWeightLabel: string;
+      decisiveLabel: string;
+      supportiveLabel: string;
+      neutralLabel: string;
+      answerMappingLabel: string;
+      whenItWouldFitLabel: string;
+      whyItRankedLowerLabel: string;
+      rankingShiftLabel: string;
+    };
   };
   interpretation: {
     eyebrow: string;

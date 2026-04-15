@@ -12,7 +12,7 @@ import { detectRecommendationMode } from "@/lib/result/detectRecommendationMode"
 function addMethodologyLabel(
   methodologyLabels: RecommendationInterpretation["methodologyLabels"],
   methodologyId: MethodologyId | undefined,
-  label: RecommendationInterpretationLabel
+  label: RecommendationInterpretationLabel,
 ) {
   if (!methodologyId) {
     return;
@@ -23,6 +23,23 @@ function addMethodologyLabel(
   if (!existingLabels.includes(label)) {
     methodologyLabels[methodologyId] = [...existingLabels, label];
   }
+}
+
+function hasDominantInterpretationLabel(
+  methodologyLabels: RecommendationInterpretation["methodologyLabels"],
+  methodologyId: MethodologyId | undefined,
+) {
+  if (!methodologyId) {
+    return false;
+  }
+
+  return (methodologyLabels[methodologyId] ?? []).some(
+    (label) =>
+      label === "primary_recommendation" ||
+      label === "dominant_constraint_match" ||
+      label === "critical_complementary_strategy" ||
+      label === "best_current_fit",
+  );
 }
 
 export function buildRecommendationInterpretation(
@@ -66,7 +83,14 @@ export function buildRecommendationInterpretation(
     addMethodologyLabel(methodologyLabels, topMethodologyId, "primary_recommendation");
   }
 
-  if (supportFlags.includes("architecture_supporting_option")) {
+  if (
+    supportFlags.includes("architecture_supporting_option") &&
+    architectureSupportMethodologyId !== topMethodologyId &&
+    !hasDominantInterpretationLabel(
+      methodologyLabels,
+      architectureSupportMethodologyId,
+    )
+  ) {
     addMethodologyLabel(
       methodologyLabels,
       architectureSupportMethodologyId,
@@ -74,7 +98,11 @@ export function buildRecommendationInterpretation(
     );
   }
 
-  if (supportFlags.includes("risk_supporting_option")) {
+  if (
+    supportFlags.includes("risk_supporting_option") &&
+    riskSupportMethodologyId !== topMethodologyId &&
+    !hasDominantInterpretationLabel(methodologyLabels, riskSupportMethodologyId)
+  ) {
     addMethodologyLabel(
       methodologyLabels,
       riskSupportMethodologyId,
